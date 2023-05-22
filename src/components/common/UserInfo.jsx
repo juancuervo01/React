@@ -4,16 +4,19 @@ export default function UserInfo() {
   const { session, logout } = useAuth()
 
   return (
-    <div className="flex flex-wrap gap-4">
+    <div className="flex flex-wrap gap-4 bg-customColor text-black p-4">
       <div>
-        <p>
-          Usuario: <span className="text-white">{session.name}</span>
+        <p className="text-lg font-semibold">
+          Usuario: <span className="text-black">{session.username}</span>
         </p>
-        <p>
-          ID: <span className="text-white">{session.id}</span>
+        <p className="text-lg font-semibold">
+          Nombre: <span className="text-black">{session.nombre_usuario}</span>
+        </p>
+        <p className="text-sm">
+          ID: <span className="text-black">{session.idusuario}</span>
         </p>
       </div>
-      <button className="bg-white p-2" onClick={logout}>
+      <button className="bg-red-300 text-black font-semibold p-2 rounded-lg" onClick={logout}>
         Cerrar sesión
       </button>
     </div>

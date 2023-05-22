@@ -1,7 +1,6 @@
 import { lazy } from 'react'
 import { Navigate } from 'react-router-dom'
 import ProtectedLayout from '@/components/layouts/ProtectedLayout'
-import ManageFoodMenusPage from './components/ManageFoodMenus'
 
 const HomePage = lazy(() => import('@/pages/components/Home'))
 const Information = lazy(() => import('@/pages/components/Information'))
@@ -37,10 +36,6 @@ export const protectedRoutes = [
       {
         path: '/information',
         element: <Information />
-      },
-      {
-        path: '/manage-food-menus',
-        element: <ManageFoodMenusPage />
       },
       {
         path: '*',

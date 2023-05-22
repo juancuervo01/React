@@ -11,29 +11,82 @@ import {
   setDoc,
   updateDoc,
   increment,
-  deleteDoc
+  deleteDoc,
+  orderBy,
+  limit
 } from 'firebase/firestore'
-import { usersMocks } from '@/services/mocks'
 
-export const loginWithEmailAndPassword = ({ email, password }) => {
+export const loginWithUsernameAndPassword = ({ username, password }) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      const findUser = usersMocks.find((u) => u.email === email && u.password === password)
-      if (!findUser) reject(new Error('Usuario o contraseña incorrectos'))
-      resolve(findUser)
+      if (!password) {
+        reject(new Error('Clave no válida'))
+        return
+      }
+      const db = getFirestore(app)
+      const usuariosCollection = collection(db, 'usuarios')
+
+      const usernameQuery = query(usuariosCollection, where('username', '==', username))
+      const passwordQuery = query(usernameQuery, where('clave', '==', password))
+
+      getDocs(passwordQuery)
+        .then((querySnapshot) => {
+          if (querySnapshot.empty) {
+            reject(new Error('Usuario o contraseña incorrectos'))
+          } else {
+            const user = querySnapshot.docs[0].data()
+            resolve(user)
+          }
+        })
+        .catch((error) => {
+          reject(error)
+        })
     }, 1000)
   })
 }
 
-export const getAllFoodMenus = async () => {
-  const db = getFirestore(app)
-  const q = query(collection(db, 'food-menus'))
-  const querySnapshot = await getDocs(q)
-  const dailyFoodMenus = []
-  querySnapshot.forEach((doc) => {
-    dailyFoodMenus.push({ id: doc.id, ...doc.data() })
+export const createUserWithUsernameAndPassword = ({ name, username, password }) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(async () => {
+      try {
+        const db = getFirestore(app)
+        const usuariosCollection = collection(db, 'usuarios')
+
+        const querySnapshot = await getDocs(query(usuariosCollection, orderBy('idusuario', 'desc'), limit(1)))
+
+        let newIdusuario = 1 // Valor predeterminado si no hay documentos en la colección
+
+        if (!querySnapshot.empty) {
+          const lastDoc = querySnapshot.docs[0]
+          const lastIdusuario = lastDoc.data().idusuario
+          newIdusuario = lastIdusuario + 1
+        }
+
+        const newUser = {
+          idusuario: newIdusuario,
+          nombre_usuario: name,
+          username,
+          clave: password
+        }
+
+        const docRef = await addDoc(usuariosCollection, newUser)
+        resolve({ id: docRef.id, ...newUser })
+      } catch (error) {
+        reject(error)
+      }
+    }, 1000)
   })
-  return dailyFoodMenus
+}
+
+export const getAllShoppingList = async () => {
+  const db = getFirestore(app)
+  const q = query(collection(db, 'lista_compras'))
+  const querySnapshot = await getDocs(q)
+  const shoppingList = []
+  querySnapshot.forEach((doc) => {
+    shoppingList.push({ id: doc.id, ...doc.data() })
+  })
+  return shoppingList
 }
 
 export const getDailyFoodMenus = async () => {

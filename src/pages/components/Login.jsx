@@ -1,23 +1,23 @@
 import { Link } from 'react-router-dom'
-import { loginWithEmailAndPassword } from '@/services/endpoints'
+import { loginWithUsernameAndPassword } from '@/services/endpoints'
 import { toast } from 'react-hot-toast'
 import { useAuth } from '@/hooks/useAuth'
 import { useState } from 'react'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import PropagateLoader from 'react-spinners/PropagateLoader'
-import logo from '@/assets/logo.jpg'
+import logo from '@/assets/sesion.png'
 
 export default function LoginPage() {
   const { login } = useAuth()
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
 
   const onSubmit = (e) => {
     e.preventDefault()
     setLoading(true)
-    loginWithEmailAndPassword({ email, password })
+    loginWithUsernameAndPassword({ username, password })
       .then((session) => {
         login(session)
         toast.success('Inicio de sesión exitoso')
@@ -43,13 +43,13 @@ export default function LoginPage() {
         <img className='m-auto mb-4' src={logo} width="250" height="100" />
         <Input
           required
-          id="email"
-          name="email"
-          type="email"
-          label="Correo"
-          placeholder="example@unicauca.edu.co"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          id="username"
+          name="username"
+          type="username"
+          label="Usuario"
+          placeholder="Ingresa tu usuario"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
         <Input
           required
@@ -68,7 +68,7 @@ export default function LoginPage() {
           <p>
             ¿Aún no tienes cuenta?{' '}
             <Link to="/register" className="text-blue-600 hover:underline">
-              Registrate
+              Regístrate
             </Link>
           </p>
         </div>

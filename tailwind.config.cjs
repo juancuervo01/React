@@ -5,6 +5,9 @@ module.exports = {
     extend: {
       backgroundImage: {
         unicauca: "url('/unicauca.jpg')"
+      },
+      colors: {
+        customColor: 'rgba(255, 254, 239, 1)'
       }
     }
   },

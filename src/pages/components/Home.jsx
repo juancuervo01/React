@@ -1,65 +1,49 @@
-import { FoodMenuCard } from '@/components/cards'
-import { getDailyFoodMenus } from '@/services/endpoints'
-import { modals } from '@/utils/modals'
+import { getAllShoppingList } from '@/services/endpoints'
 import { PageSpinner } from '@/components/spinners'
-import { sessionRoles } from '@/utils/roles'
-import { useAuth } from '@/hooks/useAuth'
+// import { sessionRoles } from '@/utils/roles'
+// import { useAuth } from '@/hooks/useAuth'
 import { useEffect, useState } from 'react'
-import { useModal } from '@/hooks/useModal'
-import { useTips } from '@/hooks/useTips'
 
 export default function HomePage() {
-  const [foodMenus, setFoodMenus] = useState([])
+  const [shoppingList, setShoppingList] = useState([])
   const [loading, setLoading] = useState(true)
-  const { homeAdminInitial, homeUserInitial } = useTips()
-  const { session } = useAuth()
-  const { setModalView, openModal } = useModal()
-
-  const initialModalsViews = {
-    [sessionRoles.admin]: modals.homeAdminInitial,
-    [sessionRoles.user]: modals.homeUserInitial
-  }
+  // const { session } = useAuth()
 
   useEffect(() => {
-    if (homeAdminInitial && session.role === sessionRoles.admin) {
-      const modalView = initialModalsViews[session.role]
-      setModalView(modalView)
-      openModal()
-    }
-
-    if (homeUserInitial && session.role === sessionRoles.user) {
-      const modalView = initialModalsViews[session.role]
-      setModalView(modalView)
-      openModal()
-    }
-  }, [])
-
-  useEffect(() => {
-    getDailyFoodMenus()
-      .then((foodMenus) => setFoodMenus(foodMenus))
+    getAllShoppingList()
+      .then((shoppingList) => setShoppingList(shoppingList))
       .catch((error) => console.error(error))
       .finally(() => setLoading(false))
   }, [])
 
   if (loading) {
-    return <PageSpinner text="Cargando lista de menús de comida..." />
+    return <PageSpinner text="Cargando lista de compras..." />
   }
 
-  if (foodMenus.length === 0) {
+  if (shoppingList.length === 0) {
     return (
       <p className="text-center mt-12">
-        Ups 😓 no hay menús disponibles pero debes saber que estamos trabajando cada día para mejorar el servicio
+       ¡Realiza tu primera lista de compras! Haz click en añadir lista.
       </p>
     )
   }
-
   return (
+    <div>
+      <h1>Lista de compras</h1>
+      <ul>
+        {shoppingList.map((item) => (
+          <li key={item.id}>{item.name}</li>
+        ))}
+      </ul>
+    </div>
+  )
+  /*  return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
-      {foodMenus.map((foodMenu) => (
-        <article className='h-full' key={foodMenu.id}>
-          <FoodMenuCard showReserveButton={session.role === sessionRoles.user} {...foodMenu} />
+      {shoppingList.map((shoppingList) => (
+        <article className='h-full' key={shoppingList.id}>
+          <FoodMenuCard showReserveButton={session.role === sessionRoles.user} {...shoppingList} />
         </article>
       ))}
     </div>
-  )
+  ) */
 }
