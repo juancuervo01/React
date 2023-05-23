@@ -1,26 +1,13 @@
 import { getUserReservers } from '@/services/endpoints'
 import { HashLoader } from 'react-spinners'
 import { useEffect, useState } from 'react'
-import ReserveListCard from '@/components/cards/ReserveListCard'
-import { useModal } from '@/hooks/useModal'
-import { useTips } from '@/hooks/useTips'
-import { modals } from '@/utils/modals'
+import ListCard from '@/components/cards/ListCard'
 
 export default function ReserveListPage() {
   const [reserveList, setReserversList] = useState([])
   const [filteredList, setFilteredList] = useState([])
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
-
-  const { setModalView, openModal } = useModal()
-  const { reservesListInitial } = useTips()
-
-  useEffect(() => {
-    if (reservesListInitial) {
-      setModalView(modals.reservesListInitial)
-      openModal()
-    }
-  }, [])
 
   useEffect(() => {
     const results = reserveList.filter((ctx) => ctx.name.trim().toLowerCase().includes(search.toLowerCase()))
@@ -41,7 +28,7 @@ export default function ReserveListPage() {
     return (
       <div className="h-screen flex flex-col gap-4 items-center justify-center">
         <HashLoader color="#00AAFF" />
-        <p>Cargando la lista de reservas...</p>
+        <p>Cargando las listas de compras...</p>
       </div>
     )
   }
@@ -52,7 +39,7 @@ export default function ReserveListPage() {
         <div className="bg-white flex justify-center">
           <input
             className="border p-4 max-w-xl w-full"
-            placeholder="Buscar por nombre de usuario"
+            placeholder="Buscar por nombre de lista"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -60,7 +47,7 @@ export default function ReserveListPage() {
         <ul className="flex flex-col gap-4">
           {filteredList.map((r) => (
             <li className="border py-2 px-4" key={r.id}>
-              <ReserveListCard {...r} />
+              <ListCard {...r} />
             </li>
           ))}
         </ul>

@@ -13,7 +13,8 @@ import {
   increment,
   deleteDoc,
   orderBy,
-  limit
+  limit,
+  serverTimestamp
 } from 'firebase/firestore'
 
 export const loginWithUsernameAndPassword = ({ username, password }) => {
@@ -78,15 +79,65 @@ export const createUserWithUsernameAndPassword = ({ name, username, password }) 
   })
 }
 
-export const getAllShoppingList = async () => {
+export const getAllShoppingList = async (idusuario) => {
   const db = getFirestore(app)
-  const q = query(collection(db, 'lista_compras'))
+  const q = query(collection(db, 'lista_compras'), where('idusuario', '==', idusuario))
   const querySnapshot = await getDocs(q)
   const shoppingList = []
   querySnapshot.forEach((doc) => {
     shoppingList.push({ id: doc.id, ...doc.data() })
   })
   return shoppingList
+}
+
+export const deleteList = async (idlista) => {
+  const db = getFirestore(app)
+  const q = query(collection(db, 'lista_compras'), where('idlista', '==', idlista))
+  const querySnapshot = await getDocs(q)
+
+  querySnapshot.forEach(async (doc) => {
+    await deleteDoc(doc.ref)
+  })
+
+  return true
+}
+
+export const createList = async (nameList, idusuario) => {
+  const db = getFirestore(app)
+  const listaCollection = collection(db, 'lista_compras')
+
+  // Consultar si existe la colección
+  const collectionSnapshot = await getDocs(listaCollection)
+  if (collectionSnapshot.empty) {
+    // La colección no existe, crearla
+    const docRef = doc(db, 'lista_compras', 'placeholder')
+    await setDoc(docRef, {})
+  }
+
+  // Consultar el último documento para obtener el ID
+  const q = query(listaCollection, orderBy('idlista', 'desc'), limit(1))
+  const querySnapshot = await getDocs(q)
+
+  let newIdlista = 1 // Valor predeterminado si no hay documentos en la colección
+
+  if (!querySnapshot.empty) {
+    const lastDoc = querySnapshot.docs[0]
+    const lastIdlista = lastDoc.data().idlista
+    newIdlista = lastIdlista + 1
+  }
+
+  const list = {
+    idlista: newIdlista,
+    nombre_lista: nameList,
+    idusuario,
+    fecha_lista: serverTimestamp()
+  }
+
+  return new Promise((resolve, reject) => {
+    addDoc(listaCollection, list)
+      .then(() => resolve(list))
+      .catch((error) => reject(error))
+  })
 }
 
 export const getDailyFoodMenus = async () => {
@@ -191,11 +242,5 @@ export const takeOffTicket = async (id) => {
   await updateDoc(washingtonRef, {
     availables: increment(-1)
   })
-  return true
-}
-
-export const deleteTicketHolder = async (id) => {
-  const db = getFirestore(app)
-  await deleteDoc(doc(db, 'ticket-holders', id))
   return true
 }

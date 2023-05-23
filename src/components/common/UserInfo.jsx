@@ -2,7 +2,6 @@ import { useAuth } from '@/hooks/useAuth'
 
 export default function UserInfo() {
   const { session, logout } = useAuth()
-
   return (
     <div className="flex flex-wrap gap-4 bg-customColor text-black p-4">
       <div>
@@ -16,7 +15,7 @@ export default function UserInfo() {
           ID: <span className="text-black">{session.idusuario}</span>
         </p>
       </div>
-      <button className="bg-red-300 text-black font-semibold p-2 rounded-lg" onClick={logout}>
+      <button className="bg-red-300 text-black p-2 rounded-lg" onClick={logout}>
         Cerrar sesión
       </button>
     </div>

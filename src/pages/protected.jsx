@@ -4,7 +4,7 @@ import ProtectedLayout from '@/components/layouts/ProtectedLayout'
 
 const HomePage = lazy(() => import('@/pages/components/Home'))
 const Information = lazy(() => import('@/pages/components/Information'))
-const PurchasesPage = lazy(() => import('@/pages/components/Purchases'))
+const AddListPages = lazy(() => import('@/pages/components/AddList'))
 const ReserveListPage = lazy(() => import('@/pages/components/ReserveList'))
 const ReservePage = lazy(() => import('@/pages/components/Reserve'))
 const TicketsListPage = lazy(() => import('@/pages/components/TicketsList'))
@@ -22,8 +22,8 @@ export const protectedRoutes = [
         element: <ReservePage />
       },
       {
-        path: '/purchases',
-        element: <PurchasesPage />
+        path: '/addList',
+        element: <AddListPages />
       },
       {
         path: '/reserve-list',
