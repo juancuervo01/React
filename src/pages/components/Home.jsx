@@ -3,10 +3,11 @@ import { PageSpinner } from '@/components/spinners'
 import { useEffect, useState } from 'react'
 import ListCard from '@/components/cards/ListCard'
 import { useAuth } from '@/hooks/useAuth'
-import Button from '@/components/ui/Button'
+import Button2 from '@/components/ui/Button2'
 import PropagateLoader from 'react-spinners/PropagateLoader'
 import { toast } from 'react-hot-toast'
 import { useNavigate } from 'react-router-dom'
+import { AiOutlinePlus } from 'react-icons/ai'
 
 export default function HomePage() {
   const navigate = useNavigate()
@@ -61,9 +62,10 @@ export default function HomePage() {
           <p className="text-center mt-12">
             ¡Realiza tu primera lista de compras! Haz click en añadir lista.
           </p>
-          <Button type="submit" disabled={loading} onClick={() => navigate('/AddList')}>
+          <Button2 type="submit" disabled={loading} onClick={() => navigate('/AddList')}>
             {loading ? <Spinner /> : 'Añadir Lista'}
-          </Button>
+            <AiOutlinePlus className="ml-1" size={30}/>
+          </Button2>
         </>
     </div>
     )
@@ -78,9 +80,10 @@ export default function HomePage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <Button type="submit" disabled={loading} onClick={() => navigate('/AddList')}>
+          <Button2 type="submit" disabled={loading} onClick={() => navigate('/AddList')}>
+            <AiOutlinePlus className="ml-1" size={30}/>
             {loading ? <Spinner /> : 'Añadir Lista'}
-          </Button>
+          </Button2>
         </div>
         <ul className="flex flex-col gap-4">
           {filteredList.map((r) => (

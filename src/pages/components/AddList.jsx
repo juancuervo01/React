@@ -6,6 +6,7 @@ import Input from '@/components/ui/Input'
 import PropagateLoader from 'react-spinners/PropagateLoader'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
+import { AiOutlinePlus } from 'react-icons/ai'
 
 export default function AddListPage() {
   const [nameList, setNameList] = useState('')
@@ -51,7 +52,10 @@ export default function AddListPage() {
       onChange={(e) => setNameList(e.target.value)}
     />
     <Button type="submit" disabled={loading}>
-      {loading ? <Spinner /> : 'Añadir'}
+    <span className="flex items-center justify-center">
+    {loading ? <Spinner /> : 'Añadir'}
+    <AiOutlinePlus className="ml-1" size={30}/>
+  </span>
     </Button>
   </form>
 </section>

@@ -1,4 +1,5 @@
 import { useAuth } from '@/hooks/useAuth'
+import { AiOutlineLogout } from 'react-icons/ai'
 
 export default function UserInfo() {
   const { session, logout } = useAuth()
@@ -15,9 +16,11 @@ export default function UserInfo() {
           ID: <span className="text-black">{session.idusuario}</span>
         </p>
       </div>
-      <button className="bg-red-300 text-black p-2 rounded-lg" onClick={logout}>
+      <button className="bg-red-500 hover:bg-red-600 active:bg-red-700 rounded-lg text-white p-2 rounded-lg flex flex-row-reverse items-center" onClick={logout}>
+        <AiOutlineLogout className="ml-1" size={30}/>
         Cerrar sesión
       </button>
+
     </div>
   )
 }

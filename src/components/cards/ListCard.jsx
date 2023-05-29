@@ -2,8 +2,8 @@
 import react from '@/assets/lista.png'
 import { format } from 'date-fns'
 import { useState } from 'react'
-// import Button from '@/components/ui/Button'
 import SimpleSpinner from '../spinners/SimpleSpinner'
+import { AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai'
 
 export default function ListCard({ idlista, nombre_lista, fecha_lista, count, handleTakeOff, handleDelete }) {
   const formattedDate = format(fecha_lista.toDate(), 'dd MMMM yyyy')
@@ -28,7 +28,7 @@ export default function ListCard({ idlista, nombre_lista, fecha_lista, count, ha
           <p>Fecha de Creación: {formattedDate}</p>
         </div>
       </div>
-      <button className="bg-green-300 px-4 rounded-lg">Añadir producto</button>
+      <button className="bg-green-500 hover:bg-green-600 px-4 rounded-lg flex items-center">Editar Lista<AiOutlineEdit className="ml-1" size={30}/></button>
       {confirm ? (
         <div className="flex gap-2">
           <button
@@ -49,11 +49,9 @@ export default function ListCard({ idlista, nombre_lista, fecha_lista, count, ha
       ) : (
         <>
         {count >= 1 && (
-          <button
-            onClick={() => handleDelete(idlista)}
-            className="bg-red-500 hover:bg-red-600 active:bg-red-700 text-white px-2 py-1 rounded-lg"
-          >
+          <button onClick={() => handleDelete(idlista)} className="bg-red-500 hover:bg-red-600 active:bg-red-700 text-white px-2 py-1 rounded-lg flex items-center">
             Eliminar tiquetera
+            <AiOutlineDelete className="ml-1" size={30}/>
           </button>
         )}
       </>

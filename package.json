@@ -1,5 +1,5 @@
 {
-  "name": "unirestaurant",
+  "name": "react",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -17,6 +17,7 @@
     "react-content-loader": "^6.2.0",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.0",
+    "react-icons": "^4.9.0",
     "react-router-dom": "^6.11.2",
     "react-spinners": "^0.13.8"
   },
