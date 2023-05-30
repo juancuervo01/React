@@ -5,7 +5,7 @@ import { useState } from 'react'
 import SimpleSpinner from '../spinners/SimpleSpinner'
 import { AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai'
 
-import { Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import React from 'react';
 
 export default function ListCard({ idlista, nombre_lista, fecha_lista, count, handleTakeOff, handleDelete }) {
@@ -33,17 +33,16 @@ export default function ListCard({ idlista, nombre_lista, fecha_lista, count, ha
           <p>Fecha de Creación: {formattedDate}</p>
         </div>
       </div>
-      
+
       <Link
-      
-      className="bg-green-500 hover:bg-green-600 rounded-lg flex items-center"
-      to={`/manage-food-menus/${idlista}`}
-    >
-      <button className="px-4 flex items-center">
-        Editar Lista
-        <AiOutlineEdit className="ml-1" size={30} />
-      </button>
-    </Link>
+        className="bg-green-500 hover:bg-green-600 rounded-lg flex items-center"
+        to={`/manage-food-menus/${idlista}`}
+      >
+        <button className="px-4 flex items-center">
+          Editar Lista
+          <AiOutlineEdit className="ml-1" size={30} />
+        </button>
+      </Link>
 
       {confirm ? (
         <div className="flex gap-2">
@@ -64,13 +63,13 @@ export default function ListCard({ idlista, nombre_lista, fecha_lista, count, ha
         </div>
       ) : (
         <>
-        {count >= 1 && (
-          <button onClick={() => handleDelete(idlista)} className="bg-red-500 hover:bg-red-600 active:bg-red-700 text-white px-2 py-1 rounded-lg flex items-center">
-            Eliminar Lista
-            <AiOutlineDelete className="ml-1" size={30}/>
-          </button>
-        )}
-      </>
+          {count >= 1 && (
+            <button onClick={() => handleDelete(idlista)} className="bg-red-500 hover:bg-red-600 active:bg-red-700 text-white px-2 py-1 rounded-lg flex items-center">
+              Eliminar Lista
+              <AiOutlineDelete className="ml-1" size={30} />
+            </button>
+          )}
+        </>
 
       )}
     </div>
