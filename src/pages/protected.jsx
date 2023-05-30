@@ -8,6 +8,7 @@ const AddListPages = lazy(() => import('@/pages/components/AddList'))
 const ReserveListPage = lazy(() => import('@/pages/components/ReserveList'))
 const ReservePage = lazy(() => import('@/pages/components/Reserve'))
 const TicketsListPage = lazy(() => import('@/pages/components/TicketsList'))
+const ManageFoodMenus = lazy(() => import('@/pages/components/ManageFoodMenus'))
 
 export const protectedRoutes = [
   {
@@ -36,6 +37,10 @@ export const protectedRoutes = [
       {
         path: '/information',
         element: <Information />
+      },
+      {
+        path: '/manage-food-menus/:idlista',
+        element: <ManageFoodMenus />
       },
       {
         path: '*',
