@@ -13,9 +13,38 @@ export default function LoginPage() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [errors, setErrors] = useState({})
+
+  const validateForm = () => {
+    const errors = {}
+
+    if (!username) {
+      errors.username = 'El campo de usuario es requerido'
+    } else if (username.length < 3 || username.length > 20) {
+      errors.username = 'El usuario debe tener entre 3 y 20 caracteres'
+    } else if (!/^[a-zA-Z0-9]+$/.test(username)) {
+      errors.username = 'El usuario solo puede contener letras y números'
+    }
+
+    if (!password) {
+      errors.password = 'El campo de contraseña es requerido'
+    } else if (password.length < 6 || password.length > 20) {
+      errors.password = 'La contraseña debe tener entre 6 y 20 caracteres'
+    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/.test(password)) {
+      errors.password = 'La contraseña debe contener al menos una letra minúscula, una letra mayúscula, un número y un carácter especial'
+    }
+
+    return errors
+  }
 
   const onSubmit = (e) => {
     e.preventDefault()
+    const formErrors = validateForm()
+
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors)
+      return
+    }
     setLoading(true)
     loginWithUsernameAndPassword({ username, password })
       .then((session) => {
@@ -50,6 +79,7 @@ export default function LoginPage() {
           placeholder="Ingresa tu usuario"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
+          error={errors.username}
         />
         <Input
           required
@@ -60,6 +90,7 @@ export default function LoginPage() {
           placeholder="***********"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          error={errors.password}
         />
         <Button type="submit" disabled={loading}>
           {loading ? <Spinner /> : 'Iniciar sesión'}
