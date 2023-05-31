@@ -1,22 +1,21 @@
-// Import the functions you need from the SDKs you need
+// Import the functions you need from the SDKs you need'
 import { initializeApp } from 'firebase/app'
-// import { getAnalytics } from 'firebase/analytics';
+// import { getAnalytics } from 'firebase/analytics'
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: 'AIzaSyC2BX-BLSbpEAOulHhFpekgwgTxCGcY1VU',
-  authDomain: 'firm-camp-340804.firebaseapp.com',
-  databaseURL: 'https://firm-camp-340804-default-rtdb.firebaseio.com',
-  projectId: 'firm-camp-340804',
-  storageBucket: 'firm-camp-340804.appspot.com',
-  messagingSenderId: '651438910839',
-  appId: '1:651438910839:web:c4f56f1e25a3d983010572',
-  measurementId: 'G-MX4B44DXP8'
+  apiKey: 'AIzaSyBFt9dHRNrtkVDR2X0kAdv9JfYBpPzVSyo',
+  authDomain: 'electiva-88968.firebaseapp.com',
+  projectId: 'electiva-88968',
+  storageBucket: 'electiva-88968.appspot.com',
+  messagingSenderId: '777717150463',
+  appId: '1:777717150463:web:ef531630aef944764452ca',
+  measurementId: 'G-JKMXSGV3Q9'
 }
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig)
-// const analytics = getAnalytics(app);
+// const analytics = getAnalytics(app)
