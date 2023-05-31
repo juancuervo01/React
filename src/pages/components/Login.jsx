@@ -22,16 +22,12 @@ export default function LoginPage() {
       errors.username = 'El campo de usuario es requerido'
     } else if (username.length < 3 || username.length > 20) {
       errors.username = 'El usuario debe tener entre 3 y 20 caracteres'
-    } else if (!/^[a-zA-Z0-9]+$/.test(username)) {
-      errors.username = 'El usuario solo puede contener letras y números'
     }
 
     if (!password) {
       errors.password = 'El campo de contraseña es requerido'
     } else if (password.length < 6 || password.length > 20) {
       errors.password = 'La contraseña debe tener entre 6 y 20 caracteres'
-    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/.test(password)) {
-      errors.password = 'La contraseña debe contener al menos una letra minúscula, una letra mayúscula, un número y un carácter especial'
     }
 
     return errors
