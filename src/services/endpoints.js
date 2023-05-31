@@ -99,8 +99,8 @@ export const getShoppingList = async (idusuario, idlista) => { // devuelve una l
   const shoppingList = []
   querySnapshot.forEach((doc) => {
     // doc.data() is never undefined for query doc snapshots
-    console.log(doc.id, " => ", doc.data());
-    shoppingList.push({ id: doc.id, ...doc.data() })
+    //console.log(doc.id, " => ", doc.data());
+    shoppingList.push(doc.data())
   });
   return shoppingList;
 };

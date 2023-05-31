@@ -30,22 +30,20 @@ export default function ProductsManage() {
 
   //Obtener lista
   const { idlista } =  useParams(); // id lista session.idusuario;
-  const idUsuario = session.idusuario;
-  const idLista = idlista;
+  const idLista = parseInt(idlista.trim());
+  const idUsuario = parseInt(session.idusuario);
   
-  console.log("idLista mas idUsuario:"+idLista+idUsuario);
+  console.log("id Lista : "+idLista+" - id Usuario: "+idUsuario);
 
   useEffect(() => {
     getShoppingList(idUsuario, idLista)
-      .then((shoppingList) => setShoppingList(shoppingList))
+      .then((shoppingList) => {
+        setShoppingList(shoppingList);
+        console.log(shoppingList); // Se ejecuta después de que se resuelva la promesa
+      })
       .catch((error) => console.error(error))
-      .finally(() => setLoading(false))
-  }, [])
-
-
-
-
-  
+      .finally(() => setLoading(false));
+  }, []);
 
 
   // se obtienen los productos de la lista
@@ -82,7 +80,7 @@ export default function ProductsManage() {
 
       <div className="flex flex-col mb-8">
         <h2 className="text-4xl font-bold">{listName}</h2>
-        <p className="text-gray-500">ID de la lista: {listId}</p>
+        <p className="text-gray-500">ID de la lista: {idLista}</p>
         <p className="text-gray-500">Fecha de creación: {creationDate}</p>
       </div>
 
