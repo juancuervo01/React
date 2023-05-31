@@ -1,9 +1,54 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useEffect, useState } from 'react'
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+// Esto hice hoy
+import { createList } from '@/services/endpoints'
+import { getShoppingList} from '@/services/endpoints'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '@/hooks/useAuth'
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+//import { useEffect, useState } from 'react'
 
-const ProductList = () => {
+import { getAllShoppingList, deleteList } from '@/services/endpoints'
+import { PageSpinner } from '@/components/spinners'
+import ListCard from '@/components/cards/ListCard'
+import Button2 from '@/components/ui/Button2'
+import PropagateLoader from 'react-spinners/PropagateLoader'
+import { AiOutlinePlus } from 'react-icons/ai'
+// hasta aqui
+
+export default function ProductsManage() {
+  const navigate = useNavigate()
+  const { session } = useAuth()
+  const [shoppingList, setShoppingList] = useState([])
+  const [filteredList, setFilteredList] = useState([])
+  const [search, setSearch] = useState('')
+  const [loading, setLoading] = useState(true)
+
+  //Obtener lista
+  const { idlista } =  useParams(); // id lista session.idusuario;
+  const idUsuario = session.idusuario;
+  const idLista = idlista;
+  
+  console.log("idLista mas idUsuario:"+idLista+idUsuario);
+
+  useEffect(() => {
+    getShoppingList(idUsuario, idLista)
+      .then((shoppingList) => setShoppingList(shoppingList))
+      .catch((error) => console.error(error))
+      .finally(() => setLoading(false))
+  }, [])
+
+
+
+
+  
+
+
+  // se obtienen los productos de la lista
   const [products, setProducts] = useState([
     { id: 1, name: 'Producto 1', price: 10, provider: 'Proveedor A' },
     { id: 2, name: 'Producto 2', price: 20, provider: 'Proveedor B' },
@@ -12,7 +57,7 @@ const ProductList = () => {
 
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [listName, setListName] = useState('Plaza');
-  const [listId, setListId] = useState(12345);
+  const listId = idlista;
   const [creationDate, setCreationDate] = useState('2023-06-01');
 
   const handleAddProduct = (product) => {
@@ -29,6 +74,8 @@ const ProductList = () => {
     const updatedProducts = selectedProducts.filter((p) => p.id !== product.id);
     setSelectedProducts(updatedProducts);
   };
+
+  
 
   return (
     <div className="h-screen justify-center items-center p-20">
@@ -108,6 +155,4 @@ const ProductList = () => {
       <ToastContainer style={{ marginTop: '20px' }} />
     </div>
   );
-};
-
-export default ProductList;
+}

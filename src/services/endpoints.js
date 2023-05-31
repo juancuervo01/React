@@ -79,7 +79,7 @@ export const createUserWithUsernameAndPassword = ({ name, username, password }) 
   })
 }
 
-export const getAllShoppingList = async (idusuario) => {
+export const getAllShoppingList = async (idusuario) => { // devielve todas las listas de compras a partir del id del usuario
   const db = getFirestore(app)
   const q = query(collection(db, 'lista_compras'), where('idusuario', '==', idusuario))
   const querySnapshot = await getDocs(q)
@@ -89,6 +89,21 @@ export const getAllShoppingList = async (idusuario) => {
   })
   return shoppingList
 }
+
+export const getShoppingList = async (idusuario, idlista) => { // devuelve una lista de compras a partir del id del usuario y el id de la lista
+  const db = getFirestore(app)
+  const q = query(collection(db, 'lista_compras'), 
+  where('idusuario', '==', idusuario),
+  where('idlista', '==', idlista));
+  const querySnapshot = await getDocs(q)
+  const shoppingList = []
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    console.log(doc.id, " => ", doc.data());
+    shoppingList.push({ id: doc.id, ...doc.data() })
+  });
+  return shoppingList;
+};
 
 export const deleteList = async (idlista) => {
   const db = getFirestore(app)
