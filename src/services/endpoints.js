@@ -176,6 +176,19 @@ export const getAllProveedoresList = async () => { // devielve todas las listas 
   return shoppingList
 }
 
+export const deleteProductOfList = async (idproducto, idlista) => { // elimina un producto de una lista
+  const db = getFirestore(app)
+  const q = query(collection(db, 'lista_producto'),
+  where('idproducto', '==', idproducto),
+  where('idlista', '==', idlista))
+  const querySnapshot = await getDocs(q)
+
+  querySnapshot.forEach(async (doc) => {
+    await deleteDoc(doc.ref)
+  })
+
+  return true
+}
 
 export const deleteList = async (idlista) => {
   const db = getFirestore(app)
@@ -189,7 +202,32 @@ export const deleteList = async (idlista) => {
   return true
 }
 
-export const createList = async (nameList, idusuario) => {
+export const createProductOnList = async (idproducto, idlista) => { // crea una lista
+  const db = getFirestore(app)
+  const listaCollection = collection(db, 'lista_producto')
+
+  // Consultar si existe la colección
+  const collectionSnapshot = await getDocs(listaCollection)
+  if (collectionSnapshot.empty) {
+    // La colección no existe, crearla
+    const docRef = doc(db, 'lista_producto', 'placeholder')
+    await setDoc(docRef, {})
+  }
+
+  const list_product = {
+    idlista: idlista,
+    idproducto: idproducto,
+    estado: true
+  }
+
+  return new Promise((resolve, reject) => {
+    addDoc(listaCollection, list_product)
+      .then(() => resolve(list_product))
+      .catch((error) => reject(error))
+  })
+}
+
+export const createList = async (nameList, idusuario) => { // crea una lista
   const db = getFirestore(app)
   const listaCollection = collection(db, 'lista_compras')
 

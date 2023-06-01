@@ -39,26 +39,26 @@ export default function AddListPage() {
 
   return (
     <section className="h-screen flex justify-center items-center p-2">
-  <form className="flex flex-col gap-4 w-full max-w-md" onSubmit={onSubmit}>
-    <h1 className="text-center text-lg mb-2">Agrega tu lista</h1>
-    <Input
-      required
-      id="nombre_lista"
-      name="nombre_lista"
-      type="text"
-      label="Nombre de la lista"
-      placeholder="Lista de compras"
-      value={nameList}
-      onChange={(e) => setNameList(e.target.value)}
-    />
-    <Button type="submit" disabled={loading}>
-    <span className="flex items-center justify-center">
-    {loading ? <Spinner /> : 'Añadir'}
-    <AiOutlinePlus className="ml-1" size={30}/>
-  </span>
-    </Button>
-  </form>
-</section>
+      <form className="flex flex-col gap-4 w-full max-w-md" onSubmit={onSubmit}>
+        <h1 className="text-center text-lg mb-2">Agrega tu lista</h1>
+        <Input
+          required
+          id="nombre_lista"
+          name="nombre_lista"
+          type="text"
+          label="Nombre de la lista"
+          placeholder="Lista de compras"
+          value={nameList}
+          onChange={(e) => setNameList(e.target.value)}
+        />
+        <Button type="submit" disabled={loading}>
+          <span className="flex items-center justify-center">
+            {loading ? <Spinner /> : 'Añadir'}
+            <AiOutlinePlus className="ml-1" size={30} />
+          </span>
+        </Button>
+      </form>
+    </section>
 
   )
 }

@@ -5,7 +5,8 @@ import ListCard from '@/components/cards/ListCard'
 import { useAuth } from '@/hooks/useAuth'
 import Button2 from '@/components/ui/Button2'
 import PropagateLoader from 'react-spinners/PropagateLoader'
-import { toast } from 'react-hot-toast'
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom'
 import { AiOutlinePlus } from 'react-icons/ai'
 

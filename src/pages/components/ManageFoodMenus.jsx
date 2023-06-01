@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 // Esto hice hoy
 import { createList } from '@/services/endpoints'
-import { getShoppingList, getIdProductList, getProductbyIds, getProvedorbyId, getAllProductsList, getAllProveedoresList } from '@/services/endpoints'
+import { deleteProductOfList, createProductOnList, getShoppingList, getIdProductList, getProductbyIds, getProvedorbyId, getAllProductsList, getAllProveedoresList } from '@/services/endpoints'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { getFirestore, doc, getDoc } from "firebase/firestore";
@@ -191,17 +191,30 @@ export default function ProductsManage() {
 
   const handleAddProduct = (product) => { // Funcion de Añadir un producto
     const existingProduct = productsOfList.find((p) => p.idproducto === product.idproducto);
-
     if (existingProduct) {
       toast.error('Este producto ya se encuentra en la lista');
     } else {
-      setProductsOfList([...productsOfList, product]);
+      createProductOnList(product.idproducto, idLista)// Llamo la funcion para agregar el producto a la lista en firebase
+        .then(() => {
+          toast.success('Producto agregado exitosamente.')
+          setProductsOfList([...productsOfList, product]); // agrega el producto a la lista local
+        })
+        .catch((error) => {
+          toast.error('Error al agregar el producto.')
+          console.error(error)
+        })
+        .finally(() => setLoading(false))
     }
   };
 
   const handleRemoveProduct = (product) => { // Funcion de remover un producto
-    const updatedProducts = productsOfList.filter((p) => p.idproducto !== product.idproducto);
-    setProductsOfList(updatedProducts);
+    deleteProductOfList(product.idproducto, idLista)
+      .then(() => {
+        toast.success('Producto eliminado')
+        const updatedProducts = productsOfList.filter((p) => p.idproducto !== product.idproducto);
+        setProductsOfList(updatedProducts);
+      })
+      .catch((error) => console.error(error))
   };
 
 
@@ -261,8 +274,8 @@ export default function ProductsManage() {
               </tr>
             </thead>
             <tbody>
-              
-                {productsOfList.map((product) => (
+
+              {productsOfList.map((product) => (
                 <tr key={product.id}>
                   <td className="px-4 py-2">{product.nombre_producto}</td>
                   <td className="px-4 py-2">{product.precio}</td>
@@ -280,7 +293,7 @@ export default function ProductsManage() {
       </div>
 
       <Link
-        className=" flex  py-5 justify-center items-center"
+        className=" flex  py-2 justify-center items-center"
         to={`/`}
       >
         <button className="px-8 py-2 bg-green-500 hover:bg-green-600 rounded-lg flex items-center">
