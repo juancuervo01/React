@@ -39,6 +39,16 @@ export default function ListCard({ idlista, nombre_lista, fecha_lista, count, ha
         to={`/manage-food-menus/${idlista}`}
       >
         <button className="px-4 flex items-center">
+          Productos
+          <AiOutlineEdit className="ml-1" size={30} />
+        </button>
+      </Link>
+
+      <Link
+        className="bg-green-500 hover:bg-green-600 rounded-lg flex items-center"
+        to={`/edit-list/${idlista}`}
+      >
+        <button className="px-4 flex items-center">
           Editar Lista
           <AiOutlineEdit className="ml-1" size={30} />
         </button>

@@ -1,17 +1,13 @@
 import React from 'react';
 import { useEffect, useState } from 'react'
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-hot-toast'
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
-// Esto hice hoy
 import { createList } from '@/services/endpoints'
 import { deleteProductOfList, createProductOnList, getShoppingList, getIdProductList, getProductbyIds, getProvedorbyId, getAllProductsList, getAllProveedoresList } from '@/services/endpoints'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { getFirestore, doc, getDoc } from "firebase/firestore";
-
-
 
 export default function ProductsManage() {
   const navigate = useNavigate()
@@ -30,52 +26,29 @@ export default function ProductsManage() {
   const [productsOfList, setProductsOfList] = useState([{ idproducto: 0, nombre_producto: 'Cargando...', precio: 0, idproveedor: 0, nombre_proveedor: 'Cargando...' }])
   const [allProductsOfList, setAllProductsOfList] = useState([{ idproducto: 0, nombre_producto: 'Cargando...', precio: 0, idproveedor: 0, nombre_proveedor: 'Cargando...' }])
   const [filteredList, setFilteredList] = useState([])
-  const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
 
-  // VARIABLES 
-  const [idLi, setidLi] = useState([]); // id lista
-  const [nombre_L, setnombre_L] = useState([]); // nombre lista
-  const [fecha_cre, setfecha_cre] = useState([]); // fecha lista
-  const [fechaFormateada, setfechaFormateada] = useState([]);
-  const [nombre_pro, setnombre_pro] = useState([]); // nombre producto
-  const [id_prove, setid_prove] = useState([]); // id provedor
-  const [precio_pro, setprecio_pro] = useState([]); // precio
-  const [id_pro, setid_pro] = useState([]); // id producto
-  //const [idLista,setidLista] = useState(0);
-  const [ban, setban] = useState(true);
-  // console.log(nombre_pro,id_prove, precio_pro, id_pro)
-
-  // OBTENER LISTA
+  // OBTENER ID LISTA
   const { idlista } = useParams(); // id lista session.idusuario;
-  //setidLista(parseInt(idlista.trim()));
   const idLista = parseInt(idlista.trim());
   const idUsuario = parseInt(session.idusuario);
-
-  //console.log("id Lista : "+idLista+" - id Usuario: "+idUsuario);
 
   useEffect(() => {
     getShoppingList(idUsuario, idLista)
       .then((shoppingList) => {
         setShoppingList(shoppingList);
-        //console.log("SSSSShoping 1:",shoppingList);
         setShoppingList2(shoppingList.map((obj) => {
           const fecha = new Date(obj.fecha_lista.seconds * 1000); // Multiplicamos por 1000 para convertir segundos a milisegundos
           const fechaLegible = fecha.toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" });
-
           return {
             ...obj,
             fecha_lista: fechaLegible,
           };
         }));
-
-        //console.log("SSSSShoping 2:", shoppingList2);
       })
       .catch((error) => console.error(error))
       .finally(() => setLoading(false));
   }, [idLista])
-
-
 
   // OBTENER ID PRODUCTOS DE LA LISTA
   useEffect(() => {
@@ -98,13 +71,10 @@ export default function ProductsManage() {
           precio: obj.precio,
           idproveedor: obj.idproveedor,
         })));
-
         setIdProvedores(productos.map((obj) => ({
           idproveedor: obj.idproveedor,
         })));
-
         setProductos(productos);
-        //console.log("manage getProductById =>", productos, idProveedores);
       })
       .catch((error) => console.error(error))
       .finally(() => setLoading(false));
@@ -126,7 +96,6 @@ export default function ProductsManage() {
             }
             return obj2;
           }));
-
           console.log("New ARRRRAY Productos of list", productsOfList);
           setProveedores(proveedores);
           console.log("manage getProvedoresbyID: =>", proveedores);
@@ -150,7 +119,6 @@ export default function ProductsManage() {
         setAllIdProveedores(allProductos.map((obj) => ({
           idproveedor: obj.idproveedor
         })));
-
         setAllProductos(allProductos);
         console.log("manage getAllProductsList =>", allProductos2, "AllIdProvedores", allIdProveedores);
         console.log(productos2);
@@ -163,7 +131,6 @@ export default function ProductsManage() {
   useEffect(() => {
     getAllProveedoresList()
       .then((allProveedores) => {
-
         setAllProductsOfList(allProductos2.map((obj2) => {
           const obj1 = allProveedores.find((obj1) => obj1.idproveedor == obj2.idproveedor);
           if (obj1) {
@@ -174,7 +141,6 @@ export default function ProductsManage() {
           }
           return obj2;
         }));
-
         setAllProveedores(allProveedores);
         console.log("New ARRRRAY ALL productos", allProductsOfList);
         console.log("manage getAllProveedoresList =>", allProveedores);
@@ -182,8 +148,6 @@ export default function ProductsManage() {
       .catch((error) => console.error(error))
       .finally(() => setLoading(false));
   }, [allIdProveedores])
-
-
 
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [listName, setListName] = useState('Plaza');
@@ -210,20 +174,15 @@ export default function ProductsManage() {
   const handleRemoveProduct = (product) => { // Funcion de remover un producto
     deleteProductOfList(product.idproducto, idLista)
       .then(() => {
-        toast.success('Producto eliminado')
+        toast.success('Producto eliminado.');
         const updatedProducts = productsOfList.filter((p) => p.idproducto !== product.idproducto);
         setProductsOfList(updatedProducts);
       })
       .catch((error) => console.error(error))
   };
 
-
-
   return (
     <div className="h-screen justify-center items-center p-20">
-
-
-
       <div className="flex flex-col mb-8">
         <h2 className="text-4xl font-bold">{shoppingList2[0].nombre_lista}</h2>
         <p className="text-gray-500">ID de la lista: {shoppingList2[0].idlista}</p>
@@ -246,6 +205,7 @@ export default function ProductsManage() {
                 <th className="px-4 py-2"></th>
               </tr>
             </thead>
+
             <tbody>
               {allProductsOfList.map((product) => (
                 <tr key={product.id}>
@@ -300,8 +260,6 @@ export default function ProductsManage() {
           Volver
         </button>
       </Link>
-
-      <ToastContainer style={{ marginTop: '20px' }} />
     </div>
   );
 }

@@ -100,8 +100,7 @@ export const getShoppingList = async (idusuario, idlista) => { // devuelve una l
   const querySnapshot = await getDocs(q)
   const shoppingList = []
   querySnapshot.forEach((doc) => {
-    //console.log("endpoints get ShopingList =>",doc.data());
-    shoppingList.push(doc.data())
+    shoppingList.push({ id: doc.id, ...doc.data() })
   });
   return shoppingList;
 };
@@ -113,7 +112,6 @@ export const getIdProductList = async (idlista) => { // devuelve los idproducto 
   const querySnapshot = await getDocs(q)
   const idPorductList = []
   querySnapshot.forEach((doc) => {
-    // doc.data() is never undefined for query doc snapshots
     console.log("endpoints getIdProductList: =>",doc.data().idproducto);
     idPorductList.push(doc.data().idproducto)
   });
@@ -127,10 +125,7 @@ export const getProductbyIds = async (idproductos) => {
     const q = query(collection(db, 'productos'), 
     where('idproducto', '==', idproducto));
     const querySnapshot = await getDocs(q);
-
     querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      // console.log("endpoints getProductByIds: =>", doc.data());
       productos.push(doc.data());
     });
   }
@@ -144,10 +139,7 @@ export const getProvedorbyId= async (idproveedores) => { // devuelve los proveed
     const q = query(collection(db, 'proveedores'), 
     where('idproveedor', '==', idproveedor.idproveedor));
     const querySnapshot = await getDocs(q);
-
     querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      // console.log("endpoints getProductByIds: =>", doc.data());
       productos.push(doc.data());
     });
   }
@@ -182,7 +174,6 @@ export const deleteProductOfList = async (idproducto, idlista) => { // elimina u
   where('idproducto', '==', idproducto),
   where('idlista', '==', idlista))
   const querySnapshot = await getDocs(q)
-
   querySnapshot.forEach(async (doc) => {
     await deleteDoc(doc.ref)
   })
@@ -254,7 +245,7 @@ export const createList = async (nameList, idusuario) => { // crea una lista
   const list = {
     idlista: newIdlista,
     nombre_lista: nameList,
-    idusuario,
+    idusuario: idusuario,
     fecha_lista: serverTimestamp()
   }
 
@@ -264,6 +255,19 @@ export const createList = async (nameList, idusuario) => { // crea una lista
       .catch((error) => reject(error))
   })
 }
+
+export const updateList = async (documentId, nombre_lista) => {
+  try {
+    const db = getFirestore(app);
+    const docRef = doc(db, 'lista_compras', documentId);
+    await updateDoc(docRef, {
+      nombre_lista: nombre_lista
+    });
+    console.log("Documento actualizado con éxito");
+  } catch (error) {
+    console.error("Error al actualizar el documento:", error);
+  }
+};
 
 export const getDailyFoodMenus = async () => {
   const db = getFirestore(app)
