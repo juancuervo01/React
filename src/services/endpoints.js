@@ -90,6 +90,8 @@ export const getAllShoppingList = async (idusuario) => { // devielve todas las l
   return shoppingList
 }
 
+
+
 export const getShoppingList = async (idusuario, idlista) => { // devuelve una lista de compras a partir del id del usuario y el id de la lista
   const db = getFirestore(app)
   const q = query(collection(db, 'lista_compras'), 
@@ -98,12 +100,82 @@ export const getShoppingList = async (idusuario, idlista) => { // devuelve una l
   const querySnapshot = await getDocs(q)
   const shoppingList = []
   querySnapshot.forEach((doc) => {
-    // doc.data() is never undefined for query doc snapshots
-    //console.log(doc.id, " => ", doc.data());
+    //console.log("endpoints get ShopingList =>",doc.data());
     shoppingList.push(doc.data())
   });
   return shoppingList;
 };
+
+export const getIdProductList = async (idlista) => { // devuelve los idproducto asociadas a un id de lista
+  const db = getFirestore(app)
+  const q = query(collection(db, 'lista_producto'),
+  where('idlista', '==', idlista));
+  const querySnapshot = await getDocs(q)
+  const idPorductList = []
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    console.log("endpoints getIdProductList: =>",doc.data().idproducto);
+    idPorductList.push(doc.data().idproducto)
+  });
+  return idPorductList;
+};
+
+export const getProductbyIds = async (idproductos) => {
+  const db = getFirestore(app);
+  const productos = [];
+  for (const idproducto of idproductos) {
+    const q = query(collection(db, 'productos'), 
+    where('idproducto', '==', idproducto));
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      // console.log("endpoints getProductByIds: =>", doc.data());
+      productos.push(doc.data());
+    });
+  }
+  return productos;
+};
+
+export const getProvedorbyId= async (idproveedores) => { // devuelve los proveedores deacuerdo a los idproveedor
+  const db = getFirestore(app);
+  const productos = [];
+  for (const idproveedor of idproveedores) {
+    const q = query(collection(db, 'proveedores'), 
+    where('idproveedor', '==', idproveedor.idproveedor));
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      // console.log("endpoints getProductByIds: =>", doc.data());
+      productos.push(doc.data());
+    });
+  }
+  return productos;
+};
+
+export const getAllProductsList = async () => { // devielve todas las listas de compras a partir del id del usuario
+  const db = getFirestore(app)
+  const q = query(collection(db, 'productos'))
+  const querySnapshot = await getDocs(q)
+  const shoppingList = []
+  querySnapshot.forEach((doc) => {
+    shoppingList.push(doc.data())
+  })
+  return shoppingList
+}
+
+export const getAllProveedoresList = async () => { // devielve todas las listas de compras a partir del id del usuario
+  const db = getFirestore(app)
+  const q = query(collection(db, 'proveedores'))
+  const querySnapshot = await getDocs(q)
+  const shoppingList = []
+  querySnapshot.forEach((doc) => {
+    shoppingList.push(doc.data())
+  })
+  return shoppingList
+}
+
 
 export const deleteList = async (idlista) => {
   const db = getFirestore(app)
