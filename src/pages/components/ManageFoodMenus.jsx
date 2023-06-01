@@ -190,18 +190,18 @@ export default function ProductsManage() {
   const listId = idlista;
 
   const handleAddProduct = (product) => { // Funcion de Añadir un producto
-    const existingProduct = selectedProducts.find((p) => p.idproducto === product.idproducto);
+    const existingProduct = productsOfList.find((p) => p.idproducto === product.idproducto);
 
     if (existingProduct) {
       toast.error('Este producto ya se encuentra en la lista');
     } else {
-      setSelectedProducts([...selectedProducts, product]);
+      setProductsOfList([...productsOfList, product]);
     }
   };
 
   const handleRemoveProduct = (product) => { // Funcion de remover un producto
-    const updatedProducts = selectedProducts.filter((p) => p.idproducto !== product.idproducto);
-    setSelectedProducts(updatedProducts);
+    const updatedProducts = productsOfList.filter((p) => p.idproducto !== product.idproducto);
+    setProductsOfList(updatedProducts);
   };
 
 
