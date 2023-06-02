@@ -4,6 +4,7 @@ export default function Navbar() {
   const NavOptions = () => (
     <>
       <NavButton to="/">Listas de compras</NavButton>
+      <NavButton to="/home-products">Lista de productos</NavButton>
       <NavButton to="/information">Información</NavButton>
     </>
   )

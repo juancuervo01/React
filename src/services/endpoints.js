@@ -79,7 +79,8 @@ export const createUserWithUsernameAndPassword = ({ name, username, password }) 
   })
 }
 
-export const getAllShoppingList = async (idusuario) => { // devielve todas las listas de compras a partir del id del usuario
+export const getAllShoppingList = async (idusuario) => {
+  // devielve todas las listas de compras a partir del id del usuario
   const db = getFirestore(app)
   const q = query(collection(db, 'lista_compras'), where('idusuario', '==', idusuario))
   const querySnapshot = await getDocs(q)
@@ -90,89 +91,102 @@ export const getAllShoppingList = async (idusuario) => { // devielve todas las l
   return shoppingList
 }
 
-
-
-export const getShoppingList = async (idusuario, idlista) => { // devuelve una lista de compras a partir del id del usuario y el id de la lista
+export const getShoppingList = async (idusuario, idlista) => {
+  // devuelve una lista de compras a partir del id del usuario y el id de la lista
   const db = getFirestore(app)
-  const q = query(collection(db, 'lista_compras'), 
-  where('idusuario', '==', idusuario),
-  where('idlista', '==', idlista));
+  const q = query(collection(db, 'lista_compras'), where('idusuario', '==', idusuario), where('idlista', '==', idlista))
   const querySnapshot = await getDocs(q)
   const shoppingList = []
   querySnapshot.forEach((doc) => {
     shoppingList.push({ id: doc.id, ...doc.data() })
-  });
-  return shoppingList;
-};
+  })
+  return shoppingList
+}
 
-export const getIdProductList = async (idlista) => { // devuelve los idproducto asociadas a un id de lista
+export const getProduct = async (idproducto) => {
+  // devuelve una lista de compras a partir del id del usuario y el id de la lista
   const db = getFirestore(app)
-  const q = query(collection(db, 'lista_producto'),
-  where('idlista', '==', idlista));
+  const q = query(collection(db, 'productos'), where('idproducto', '==', idproducto))
+  const querySnapshot = await getDocs(q)
+  const producto = []
+  querySnapshot.forEach((doc) => {
+    producto.push({ id: doc.id, ...doc.data() })
+  })
+  return producto
+}
+
+export const getIdProductList = async (idlista) => {
+  // devuelve los idproducto asociadas a un id de lista
+  const db = getFirestore(app)
+  const q = query(collection(db, 'lista_producto'), where('idlista', '==', idlista))
   const querySnapshot = await getDocs(q)
   const idPorductList = []
   querySnapshot.forEach((doc) => {
-    console.log("endpoints getIdProductList: =>",doc.data().idproducto);
+    console.log('endpoints getIdProductList: =>', doc.data().idproducto)
     idPorductList.push(doc.data().idproducto)
-  });
-  return idPorductList;
-};
+  })
+  return idPorductList
+}
 
 export const getProductbyIds = async (idproductos) => {
-  const db = getFirestore(app);
-  const productos = [];
+  const db = getFirestore(app)
+  const productos = []
   for (const idproducto of idproductos) {
-    const q = query(collection(db, 'productos'), 
-    where('idproducto', '==', idproducto));
-    const querySnapshot = await getDocs(q);
+    const q = query(collection(db, 'productos'), where('idproducto', '==', idproducto))
+    const querySnapshot = await getDocs(q)
     querySnapshot.forEach((doc) => {
-      productos.push(doc.data());
-    });
+      productos.push(doc.data())
+    })
   }
-  return productos;
-};
+  return productos
+}
 
-export const getProvedorbyId= async (idproveedores) => { // devuelve los proveedores deacuerdo a los idproveedor
-  const db = getFirestore(app);
-  const productos = [];
+export const getProvedorbyId = async (idproveedores) => {
+  // devuelve los proveedores deacuerdo a los idproveedor
+  const db = getFirestore(app)
+  const productos = []
   for (const idproveedor of idproveedores) {
-    const q = query(collection(db, 'proveedores'), 
-    where('idproveedor', '==', idproveedor.idproveedor));
-    const querySnapshot = await getDocs(q);
+    const q = query(collection(db, 'proveedores'), where('idproveedor', '==', idproveedor.idproveedor))
+    const querySnapshot = await getDocs(q)
     querySnapshot.forEach((doc) => {
-      productos.push(doc.data());
-    });
+      productos.push(doc.data())
+    })
   }
-  return productos;
-};
+  return productos
+}
 
-export const getAllProductsList = async () => { // devielve todas las listas de compras a partir del id del usuario
+export const getAllProductsList = async () => {
+  // devielve todas las listas de compras a partir del id del usuario
   const db = getFirestore(app)
   const q = query(collection(db, 'productos'))
   const querySnapshot = await getDocs(q)
-  const shoppingList = []
+  const allShoppingList = []
   querySnapshot.forEach((doc) => {
-    shoppingList.push(doc.data())
+    allShoppingList.push(doc.data())
   })
-  return shoppingList
+  return allShoppingList
 }
 
-export const getAllProveedoresList = async () => { // devielve todas las listas de compras a partir del id del usuario
+export const getAllProveedoresList = async () => {
+  // devielve todas las listas de compras a partir del id del usuario
   const db = getFirestore(app)
   const q = query(collection(db, 'proveedores'))
   const querySnapshot = await getDocs(q)
-  const shoppingList = []
+  const allProvedoresList = []
   querySnapshot.forEach((doc) => {
-    shoppingList.push(doc.data())
+    allProvedoresList.push(doc.data())
   })
-  return shoppingList
+  return allProvedoresList
 }
 
-export const deleteProductOfList = async (idproducto, idlista) => { // elimina un producto de una lista
+export const deleteProductOfList = async (idproducto, idlista) => {
+  // elimina un producto de una lista
   const db = getFirestore(app)
-  const q = query(collection(db, 'lista_producto'),
-  where('idproducto', '==', idproducto),
-  where('idlista', '==', idlista))
+  const q = query(
+    collection(db, 'lista_producto'),
+    where('idproducto', '==', idproducto),
+    where('idlista', '==', idlista)
+  )
   const querySnapshot = await getDocs(q)
   querySnapshot.forEach(async (doc) => {
     await deleteDoc(doc.ref)
@@ -193,7 +207,8 @@ export const deleteList = async (idlista) => {
   return true
 }
 
-export const createProductOnList = async (idproducto, idlista) => { // crea una lista
+export const createProductOnList = async (idproducto, idlista) => {
+  // crea una lista
   const db = getFirestore(app)
   const listaCollection = collection(db, 'lista_producto')
 
@@ -218,7 +233,8 @@ export const createProductOnList = async (idproducto, idlista) => { // crea una 
   })
 }
 
-export const createList = async (nameList, idusuario) => { // crea una lista
+export const createList = async (nameList, idusuario) => {
+  // crea una lista
   const db = getFirestore(app)
   const listaCollection = collection(db, 'lista_compras')
 
@@ -258,16 +274,31 @@ export const createList = async (nameList, idusuario) => { // crea una lista
 
 export const updateList = async (documentId, nombre_lista) => {
   try {
-    const db = getFirestore(app);
-    const docRef = doc(db, 'lista_compras', documentId);
+    const db = getFirestore(app)
+    const docRef = doc(db, 'lista_compras', documentId)
     await updateDoc(docRef, {
       nombre_lista: nombre_lista
-    });
-    console.log("Documento actualizado con éxito");
+    })
+    console.log('Documento actualizado con éxito')
   } catch (error) {
-    console.error("Error al actualizar el documento:", error);
+    console.error('Error al actualizar el documento:', error)
   }
-};
+}
+
+export const updateProducto = async (documentId, nombre_producto, precio, idproveedor) => {
+  try {
+    const db = getFirestore(app)
+    const docRef = doc(db, 'productos', documentId)
+    await updateDoc(docRef, {
+      nombre_producto: nombre_producto,
+      precio: precio,
+      idproveedor: idproveedor
+    })
+    console.log('Documento actualizado con éxito')
+  } catch (error) {
+    console.error('Error al actualizar el documento:', error)
+  }
+}
 
 export const getDailyFoodMenus = async () => {
   const db = getFirestore(app)
