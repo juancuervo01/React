@@ -17,7 +17,6 @@ export default function EditList() {
   const [nameLista, setnameLista] = useState([])
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
-
   // OBTENER ID LISTA
   const { idlista } = useParams() // id lista session.idusuario;
   const idLista = parseInt(idlista.trim())
@@ -43,7 +42,7 @@ export default function EditList() {
       .finally(() => setLoading(false))
   }, [idlista, shoppingList2])
 
-  const [nombreLista, setNombreLista] = useState(shoppingList2[0].nombre_lista)
+  const [nombreLista, setNombreLista] = useState()
 
   const handleInputChange = (e) => {
     setNombreLista(e.target.value)
@@ -51,11 +50,16 @@ export default function EditList() {
 
   const handleSave = () => {
     if (nombreLista != '') {
-      updateList(shoppingList[0].id, nombreLista)
-        .then(() => {
-          toast.success('Lista editada correctamente')
-        })
-        .catch((error) => console.error(error))
+      if (nombreLista != undefined && nombreLista != shoppingList[0].nombre_lista) {
+        console.log(nombreLista)
+        updateList(shoppingList[0].id, nombreLista)
+          .then(() => {
+            toast.success('Lista editada correctamente')
+          })
+          .catch((error) => console.error(error))
+      } else {
+        toast.error('No se han realizado cambios')
+      }
     } else {
       toast.error('Nombre debe tener un valor')
     }

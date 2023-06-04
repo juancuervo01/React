@@ -8,19 +8,28 @@ import { getAllProveedoresList, updateProducto, updateList, getProduct, getProve
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { getFirestore, doc, getDoc } from 'firebase/firestore'
+import Input from '@/components/ui/Input'
+import Button from '@/components/ui/Button'
+import Button2 from '@/components/ui/Button2'
+import { AiOutlinePlus } from 'react-icons/ai'
+import PropagateLoader from 'react-spinners/PropagateLoader'
 
 export default function EditList() {
   const navigate = useNavigate()
   const { session } = useAuth()
   const [producto, setProducto] = useState([])
   const [producto2, setProducto2] = useState([{}])
-  const [proveedor, setProveedor] = useState([])
+  const [proveedor, setProveedor] = useState()
   const [proveedores, setProveedores] = useState([])
   const [proveedores2, setProveedores2] = useState([])
   const [allIdProveedores, setAllIdProveedores] = useState([{}])
   const [nameLista, setnameLista] = useState([])
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
+  const [nombreProducto, setNombreProducto] = useState()
+  const [precioProducto, setPrecioProducto] = useState()
+  const [proveedorProducto, setProveedorProducto] = useState()
+  const [idProveedorProducto, setIdProveedorProducto] = useState()
 
   // OBTENER ID LISTA
   const { idproducto } = useParams() // id lista session.idusuario;
@@ -31,17 +40,16 @@ export default function EditList() {
     getProduct(idProducto)
       .then((producto) => {
         setProducto(producto)
-        setnameLista(producto[0].nombre_producto)
-        setProducto2(
-          producto.map((obj) => {
-            const fecha = new Date(obj.fecha_creacion.seconds * 1000) // Multiplicamos por 1000 para convertir segundos a milisegundos
-            const fechaLegible = fecha.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
-            return {
-              ...obj,
-              fecha_creacion: fechaLegible
-            }
-          })
-        )
+        const productoTransformado = producto.map((obj) => {
+          const fecha = new Date(obj.fecha_creacion.seconds * 1000)
+          const fechaLegible = fecha.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })
+          return {
+            ...obj,
+            fecha_creacion: fechaLegible
+          }
+        })
+        setProducto2(productoTransformado)
+        console.log('producto producto2 =>', producto, productoTransformado)
       })
       .catch((error) => console.error(error))
       .finally(() => setLoading(false))
@@ -51,7 +59,7 @@ export default function EditList() {
     getProvedorbyId([{ idproveedor: producto2[0].idproveedor }])
       .then((proveedor) => {
         setProveedor(proveedor)
-        console.log('manage getProvedorbyId edirPROO =>', proveedor)
+        console.log('getProvedorbyId proveedor =>', proveedor)
       })
       .catch((error) => console.error(error))
       .finally(() => setLoading(false))
@@ -61,86 +69,99 @@ export default function EditList() {
     getAllProveedoresList()
       .then((proveedores) => {
         setProveedores(proveedores)
-        const indiceObjetoBuscado = proveedores.findIndex((p) => p.idproveedor == proveedor[0].idproveedor)
-        const proveedoresMapeados = [
-          ...(indiceObjetoBuscado !== -1 ? [proveedores[indiceObjetoBuscado]] : []),
-          ...proveedores.filter((p) => p.idproveedor !== proveedor[0].idproveedor)
-        ]
-        setProveedores2(proveedoresMapeados)
-        console.log('manage getALLProvedoresList edirPROO mapeados =>', proveedores2)
+        const proveedorId = producto2[0].idproveedor
+        setProveedores2([
+          ...proveedores.filter((p) => p.idproveedor == proveedorId),
+          ...proveedores.filter((p) => p.idproveedor != proveedorId)
+        ])
+        console.log('getALLProvedoresList proveedores mapeados (proveedores2) =>', proveedores2)
       })
       .catch((error) => console.error(error))
       .finally(() => setLoading(false))
-  }, [producto2, proveedor])
+  }, [proveedor, producto2, producto])
 
-  const [nombreProducto, setNombreProducto] = useState(producto2[0].nombre_producto)
-  const [precioProducto, setPrecioProducto] = useState(producto2[0].precio)
-  const [proveedorProducto, setProveedorProducto] = useState(proveedor.idproveedor)
+  useEffect(() => {
+    setNombreProducto(producto2[0].nombre_producto)
+    setPrecioProducto(producto2[0].precio)
+    setIdProveedorProducto(producto2[0].idproveedor)
+  }, [producto2])
 
-  const handleInputChange = (e) => {
+  const handleInputChangeNombre = (e) => {
     setNombreProducto(e.target.value)
   }
+  const handleInputChangePrecio = (e) => {
+    setPrecioProducto(e.target.value)
+  }
+  const handleInputChangeProveedor = (e) => {
+    const nombreProveedorBuscado = e.target.value
+    const objetoEncontrado = proveedores2.find(objeto => objeto.nombre_proveedor === nombreProveedorBuscado)
+    setIdProveedorProducto(objetoEncontrado.idproveedor)
+    setProveedorProducto(objetoEncontrado.nombre_proveedor)
+  }
 
-  const handleSave = () => {
-    if (nombreProducto != '' && precioProducto != '' && proveedorProducto != '') {
-      updateProducto(producto[0].id, nombreProducto, precioProducto, proveedorProducto)
+  const onSubmit = (e) => {
+    if (nombreProducto == producto2[0].nombre_producto && precioProducto == producto2[0].precio && idProveedorProducto == producto2[0].idproveedor) {
+      e.preventDefault()
+      setLoading(true)
+      toast.error('No se ha realizado cambios')
+      setLoading(false)
+    } else {
+      e.preventDefault()
+      setLoading(true)
+      updateProducto(producto2[0].id, nombreProducto, precioProducto, idProveedorProducto)
         .then(() => {
           toast.success('Producto editado correctamente')
         })
         .catch((error) => console.error(error))
-    } else {
-      toast.error('Todos los campos son obligatorios')
+        .finally(() => setLoading(false))
     }
   }
 
-  const handleKeyDown = (event) => {
-    const isNumberKey = /^[0-9]+$/.test(event.key)
-    if (!isNumberKey) {
-      event.preventDefault()
-    }
-  }
+  const Spinner = () => (
+    <PropagateLoader
+      cssOverride={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      color="#FFFFFF"
+      className="h-6"
+    />
+  )
 
   const handleExit = () => {
-    navigate('/edit-product')
+    navigate('/home-products')
   }
 
   return (
     <div className="flex flex-col items-center justify-top h-screen mt-10">
-      <h2 className="text-4xl font-bold mb-4">Editar Producto</h2>
-      <div className="flex items-center mb-4">
-        <label htmlFor="nombre" className="mr-2 text-gray-600">
-          Nombre:
-        </label>
-        <input
-          type="text"
+      <form className="flex flex-col gap-4 w-full max-w-md" onSubmit={onSubmit}>
+        <h2 className="text-4xl font-bold mb-4">Editar Producto</h2>
+        <Input
+          required
           id="nombre"
-          defaultValue={producto2[0].nombre_producto}
-          onChange={handleInputChange}
-          className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-        />
-      </div>
-      <div className="flex items-center mb-4">
-        <label htmlFor="precio" className="mr-2 text-gray-600">
-          Precio:
-        </label>
-        <input
+          name="nombre"
           type="text"
-          id="precio"
-          value={producto2[0].precio}
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
-          className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          label="Nombre del Producto:"
+          placeholder="Nombre del producto"
+          value={nombreProducto}
+          onChange={handleInputChangeNombre}
         />
-      </div>
-
-      <div className="flex items-center mb-4">
-        <label htmlFor="proveedor" className="mr-2 text-gray-600">
+        <Input
+          required
+          id="precio"
+          name="precio"
+          type="number"
+          min="0"
+          label="Precio del Producto:"
+          placeholder="5000"
+          value={precioProducto}
+          onChange={handleInputChangePrecio}
+        />
+        <label htmlFor="proveedor">
           Proveedor:
         </label>
         <select
+          value={proveedorProducto}
+          label="Proveedor del Producto:"
           id="proveedor"
-          defaultValue={producto2[0].idproveedor}
-          onChange={handleInputChange}
+          onChange={handleInputChangeProveedor}
           className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
         >
           {proveedores2.map((prov) => (
@@ -149,23 +170,43 @@ export default function EditList() {
             </option>
           ))}
         </select>
-      </div>
-      <p className="text-gray-600 mb-2">Fecha de Creación: {producto2[0].fecha_creacion}</p>
-      <p className="text-gray-600 mb-2">ID del producto: {producto2[0].idproducto}</p>
-      <div className="mt-4">
-        <button
-          onClick={handleSave}
-          className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
-        >
-          Guardar
-        </button>
-        <button
-          onClick={handleExit}
-          className="px-8 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 ml-12"
-        >
-          Salir
-        </button>
-      </div>
+
+        <Input
+          disabled
+          required
+          id="fecha"
+          name="fecha"
+          type="text"
+          label="Fecha de Creacion:"
+          placeholder="4 de Junio del 2023"
+          value={producto2[0].fecha_creacion}
+        />
+        <Input
+          disabled
+          required
+          id="id"
+          name="id"
+          type="number"
+          min='0'
+          label="ID del Producto:"
+          placeholder="1"
+          value={producto2[0].idproducto}
+        />
+        <div className="mt-1 flex justify-center">
+          <Button type="submit" disabled={loading}>
+            <span className="flex items-center justify-center">
+              {loading ? <Spinner /> : 'Editar'}
+              <AiOutlinePlus className="ml-1" size={30} />
+            </span>
+          </Button>
+          <button
+            onClick={handleExit}
+            className="px-8 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 ml-12"
+          >
+            Salir
+          </button>
+        </div>
+      </form>
     </div>
   )
 }

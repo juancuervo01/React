@@ -215,7 +215,7 @@ export default function ProductsManage() {
   }
 
   return (
-    <div className="h-screen justify-center items-center p-20">
+    <section className="h-screen justify-center items-center p-20">
       <div className="flex flex-col mb-8">
         <h2 className="text-4xl font-bold">{shoppingList2[0].nombre_lista}</h2>
         <p className="text-gray-500">ID de la lista: {shoppingList2[0].idlista}</p>
@@ -293,6 +293,6 @@ export default function ProductsManage() {
       <Link className=" flex  py-2 justify-center items-center" to={`/`}>
         <button className="px-8 py-2 bg-green-500 hover:bg-green-600 rounded-lg flex items-center">Volver</button>
       </Link>
-    </div>
+    </section>
   )
 }

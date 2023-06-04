@@ -18,7 +18,6 @@ export default function ListCard({ idlista, nombre_lista, fecha_lista, count, ha
     handleTakeOff(idlista, { setLoading, setConfirm })
   }
 
-
   const handleCancel = () => {
     setConfirm(false)
   }

@@ -1,4 +1,4 @@
-import { deleteList, getProvedorbyId, getAllProductsList } from '@/services/endpoints'
+import { deleteList, getAllProveedoresList, getAllProductsList } from '@/services/endpoints'
 import { PageSpinner } from '@/components/spinners'
 import { useEffect, useState } from 'react'
 import ProductCard from '@/components/cards/ProductCard'
@@ -16,6 +16,8 @@ export default function HomePage() {
   const [filteredList, setFilteredList] = useState([])
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
+  const [proveedores, setProveedores] = useState([])
+  const [productListConNombre, setproductListConNombre] = useState([])
 
   useEffect(() => {
     getAllProductsList()
@@ -25,9 +27,30 @@ export default function HomePage() {
   }, [])
 
   useEffect(() => {
-    const results = productList.filter((item) => item.nombre_producto.trim().toLowerCase().includes(search.toLowerCase()))
+    getAllProveedoresList([{ idproveedor: 1 }])
+      .then((proveedores) => {
+        setProveedores(proveedores)
+        setproductListConNombre(productList.map((producto) => {
+          const proveedor = proveedores.find((p) => p.idproveedor === producto.idproveedor)
+          if (proveedor) {
+            return {
+              ...producto,
+              nombre_proveedor: proveedor.nombre_proveedor
+            }
+          } else {
+            return producto
+          }
+        }))
+        // console.log('getProvedorbyId proveedores =>', proveedores)
+      })
+      .catch((error) => console.error(error))
+      .finally(() => setLoading(false))
+  }, [productList])
+
+  useEffect(() => {
+    const results = productListConNombre.filter((item) => item.nombre_producto.trim().toLowerCase().includes(search.toLowerCase()))
     setFilteredList(results)
-  }, [search, productList])
+  }, [search, productList, productListConNombre])
 
   const Spinner = () => (
     <PropagateLoader
@@ -52,7 +75,7 @@ export default function HomePage() {
   }
 
   if (loading) {
-    return <PageSpinner text="Cargando lista de compras..." />
+    return <PageSpinner text="Cargando Productos..." />
   }
 
   if (productList.length === 0) {
@@ -60,14 +83,14 @@ export default function HomePage() {
       <div className="bg-white flex flex-col items-center justify-center">
         <>
           <p className="text-center mt-12">
-            ¡Realiza tu primera lista de compras! Haz click en añadir lista.
+            ¡Agrega un primer producto! ! Haz click en Añadir Producto.
           </p>
-          <Button2 type="submit" disabled={loading} onClick={() => navigate('/AddProduct')}>
-            {loading ? <Spinner /> : 'Añadir Lista'}
-            <AiOutlinePlus className="ml-1" size={30}/>
+          <Button2 type="submit" disabled={loading} onClick={() => navigate('/home-products')}>
+            {loading ? <Spinner /> : 'Añadir Producto'}
+            <AiOutlinePlus className="ml-1" size={30} />
           </Button2>
         </>
-    </div>
+      </div>
     )
   }
   return (
@@ -76,13 +99,13 @@ export default function HomePage() {
         <div className="bg-white flex justify-center gap-10">
           <input
             className="border p-4 max-w-xl w-full"
-            placeholder="Buscar por nombre de lista"
+            placeholder="Buscar por nombre del Producto"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <Button2 type="submit" disabled={loading} onClick={() => navigate('/AddList')}>
+           <Button2 type="submit" disabled={loading} onClick={() => navigate('/AddProduct')}>
             <AiOutlinePlus className="ml-1" size={30}/>
-            {loading ? <Spinner /> : 'Añadir Lista'}
+            {loading ? <Spinner /> : 'Añadir Producto'}
           </Button2>
         </div>
         <ul className="flex flex-col gap-4">

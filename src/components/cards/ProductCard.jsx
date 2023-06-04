@@ -7,11 +7,12 @@ import { AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai'
 import { Link } from 'react-router-dom'
 import React from 'react'
 
-export default function ListCard({ idproducto, idproveedor, precio, nombre_producto, fecha_creacion, count, handleTakeOff, handleDelete }) {
+export default function ListCard({ idproducto, idproveedor, precio, nombre_producto, fecha_creacion, count, handleTakeOff, handleDelete, nombre_proveedor }) {
   const formattedDate = format(fecha_creacion.toDate(), 'dd MMMM yyyy')
   const [confirm, setConfirm] = useState(false)
   const [loading, setLoading] = useState(false)
-  count = 1
+  const [proveedor, setProveedor] = useState()
+
   const handleConfirm = () => {
     setLoading(true)
     handleTakeOff(idproducto, { setLoading, setConfirm })
@@ -30,7 +31,7 @@ export default function ListCard({ idproducto, idproveedor, precio, nombre_produ
           <p>Id: {idproducto}</p>
           <p>Fecha de Creación: {formattedDate}</p>
           <p>Precio: {precio}</p>
-          <p>Poveedor: {idproveedor}</p>
+          <p>Poveedor: {nombre_proveedor}</p>
         </div>
       </div>
 

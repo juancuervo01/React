@@ -5,6 +5,7 @@ import ProtectedLayout from '@/components/layouts/ProtectedLayout'
 const HomePage = lazy(() => import('@/pages/components/Home'))
 const Information = lazy(() => import('@/pages/components/Information'))
 const AddListPages = lazy(() => import('@/pages/components/AddList'))
+const AddProduct = lazy(() => import('@/pages/components/AddProduct'))
 const ReserveListPage = lazy(() => import('@/pages/components/ReserveList'))
 const ReservePage = lazy(() => import('@/pages/components/Reserve'))
 const TicketsListPage = lazy(() => import('@/pages/components/TicketsList'))
@@ -26,8 +27,12 @@ export const protectedRoutes = [
         element: <ReservePage />
       },
       {
-        path: '/addList',
+        path: '/AddList',
         element: <AddListPages />
+      },
+      {
+        path: '/AddProduct',
+        element: <AddProduct />
       },
       {
         path: '/reserve-list',
@@ -51,10 +56,6 @@ export const protectedRoutes = [
       },
       {
         path: '/edit-product/:idproducto',
-        element: <EditProduct/>
-      },
-      {
-        path: '/edit-product/-',
         element: <EditProduct/>
       },
       {

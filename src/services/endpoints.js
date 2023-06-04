@@ -199,9 +199,14 @@ export const deleteList = async (idlista) => {
   const db = getFirestore(app)
   const q = query(collection(db, 'lista_compras'), where('idlista', '==', idlista))
   const querySnapshot = await getDocs(q)
+  const q1 = query(collection(db, 'lista_producto'), where('idlista', '==', idlista))
+  const querySnapshot1 = await getDocs(q1)
 
   querySnapshot.forEach(async (doc) => {
     await deleteDoc(doc.ref)
+    querySnapshot1.forEach(async (doc) => {
+      await deleteDoc(doc.ref)
+    })
   })
 
   return true
@@ -268,6 +273,46 @@ export const createList = async (nameList, idusuario) => {
   return new Promise((resolve, reject) => {
     addDoc(listaCollection, list)
       .then(() => resolve(list))
+      .catch((error) => reject(error))
+  })
+}
+
+export const createProduct = async (nombre, idProveedor, precio) => {
+  // crea un Producto
+  const db = getFirestore(app)
+  const listaCollection = collection(db, 'productos')
+
+  // Consultar si existe la colección
+  const collectionSnapshot = await getDocs(listaCollection)
+  if (collectionSnapshot.empty) {
+    // La colección no existe, crearla
+    const docRef = doc(db, 'productos', 'placeholder')
+    await setDoc(docRef, {})
+  }
+
+  // Consultar el último documento para obtener el ID
+  const q = query(listaCollection, orderBy('idproducto', 'desc'), limit(1))
+  const querySnapshot = await getDocs(q)
+
+  let newIdproducto = 1 // Valor predeterminado si no hay documentos en la colección
+
+  if (!querySnapshot.empty) {
+    const lastDoc = querySnapshot.docs[0]
+    const lastIdproducto = lastDoc.data().idproducto
+    newIdproducto = lastIdproducto + 1
+  }
+
+  const producto = {
+    idproducto: newIdproducto,
+    nombre_producto: nombre,
+    idproveedor: idProveedor,
+    fecha_creacion: serverTimestamp(),
+    precio: precio
+  }
+
+  return new Promise((resolve, reject) => {
+    addDoc(listaCollection, producto)
+      .then(() => resolve(producto))
       .catch((error) => reject(error))
   })
 }
