@@ -40,11 +40,11 @@ export default function HomePage() {
   const handleDelete = (idlista) => {
     deleteList(idlista)
       .then(() => {
-        toast.success('Lista eliminada')
         getAllShoppingList(session.idusuario)
           .then((shoppingList) => {
             setShoppingList(shoppingList)
             setFilteredList(shoppingList)
+            toast.success('Lista eliminada correctamente')
           })
           .catch((error) => console.error(error))
       })
@@ -64,10 +64,10 @@ export default function HomePage() {
           </p>
           <Button2 type="submit" disabled={loading} onClick={() => navigate('/AddList')}>
             {loading ? <Spinner /> : 'Añadir Lista'}
-            <AiOutlinePlus className="ml-1" size={30}/>
+            <AiOutlinePlus className="ml-1" size={30} />
           </Button2>
         </>
-    </div>
+      </div>
     )
   }
   return (
@@ -81,7 +81,7 @@ export default function HomePage() {
             onChange={(e) => setSearch(e.target.value)}
           />
           <Button2 type="submit" disabled={loading} onClick={() => navigate('/AddList')}>
-            <AiOutlinePlus className="ml-1" size={30}/>
+            <AiOutlinePlus className="ml-1" size={30} />
             {loading ? <Spinner /> : 'Añadir Lista'}
           </Button2>
         </div>

@@ -17,6 +17,7 @@ import {
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { getFirestore, doc, getDoc } from 'firebase/firestore'
+import { AiOutlinePlus, AiOutlineDelete } from 'react-icons/ai'
 
 export default function ProductsManage() {
   const navigate = useNavigate()
@@ -106,7 +107,7 @@ export default function ProductsManage() {
 
   // OBTENER PROVEEDORES DE CADA PRODUCTO
   useEffect(() => {
-    console.log("idProvedoresssssss",idProveedores)
+    console.log("idProvedoresssssss", idProveedores)
     getProvedorbyId(idProveedores)
       .then((proveedores) => {
         setProductsOfList(
@@ -207,15 +208,18 @@ export default function ProductsManage() {
     // Funcion de remover un producto
     deleteProductOfList(product.idproducto, idLista)
       .then(() => {
-        toast.success('Producto eliminado.')
         const updatedProducts = productsOfList.filter((p) => p.idproducto !== product.idproducto)
         setProductsOfList(updatedProducts)
+        toast.success('Producto eliminado.')
       })
-      .catch((error) => console.error(error))
+      .catch((error) => {
+        console.error(error)
+        toast.error('Error al Quitar el producto.')
+      })
   }
 
   return (
-    <section className="h-screen justify-center items-center p-20">
+    <div className="justify-center items-center p-20">
       <div className="flex flex-col mb-8">
         <h2 className="text-4xl font-bold">{shoppingList2[0].nombre_lista}</h2>
         <p className="text-gray-500">ID de la lista: {shoppingList2[0].idlista}</p>
@@ -232,6 +236,7 @@ export default function ProductsManage() {
           <table>
             <thead>
               <tr>
+              <th className="px-4 py-2">ID</th>
                 <th className="px-4 py-2">Nombre</th>
                 <th className="px-4 py-2">Precio</th>
                 <th className="px-4 py-2">Proveedor</th>
@@ -242,15 +247,14 @@ export default function ProductsManage() {
             <tbody>
               {allProductsOfList.map((product) => (
                 <tr key={product.id}>
+                  <td className="px-4 py-2">{product.idproducto}</td>
                   <td className="px-4 py-2">{product.nombre_producto}</td>
                   <td className="px-4 py-2">{product.precio}</td>
                   <td className="px-4 py-2">{product.nombre_proveedor}</td>
                   <td className="px-4 py-2">
-                    <button
-                      className="bg-green-500 hover:bg-green-600 text-white rounded px-4 py-2"
-                      onClick={() => handleAddProduct(product)}
-                    >
+                    <button onClick={() => handleAddProduct(product)} className=" text-white bg-green-500 hover:bg-green-600 active:bg-green-700 px-2 py-1 rounded-lg flex items-center">
                       Agregar
+                      <AiOutlinePlus className="ml-1" size={30} />
                     </button>
                   </td>
                 </tr>
@@ -263,6 +267,7 @@ export default function ProductsManage() {
           <table>
             <thead>
               <tr>
+              <th className="px-4 py-2">ID</th>
                 <th className="px-4 py-2">Nombre</th>
                 <th className="px-4 py-2">Precio</th>
                 <th className="px-4 py-2">Proveedor</th>
@@ -272,15 +277,14 @@ export default function ProductsManage() {
             <tbody>
               {productsOfList.map((product) => (
                 <tr key={product.id}>
+                  <td className="px-4 py-2">{product.idproducto}</td>
                   <td className="px-4 py-2">{product.nombre_producto}</td>
                   <td className="px-4 py-2">{product.precio}</td>
                   <td className="px-4 py-2">{product.nombre_proveedor}</td>
                   <td className="px-4 py-2">
-                    <button
-                      className="bg-red-500 text-white rounded px-4 py-2 ml-4 hover:bg-red-600"
-                      onClick={() => handleRemoveProduct(product)}
-                    >
+                    <button onClick={() => handleRemoveProduct(product)} className="bg-red-500 hover:bg-red-600 active:bg-red-700 text-white px-2 py-1 rounded-lg flex items-center">
                       Quitar
+                      <AiOutlineDelete className="ml-1" size={30} />
                     </button>
                   </td>
                 </tr>
@@ -290,9 +294,9 @@ export default function ProductsManage() {
         </div>
       </div>
 
-      <Link className=" flex  py-2 justify-center items-center" to={`/`}>
+      <Link className=" flex  mt-12 justify-center items-center" to={`/`}>
         <button className="px-8 py-2 bg-green-500 hover:bg-green-600 rounded-lg flex items-center">Volver</button>
       </Link>
-    </section>
+    </div>
   )
 }

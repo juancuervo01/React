@@ -38,7 +38,7 @@ export default function AddListPage() {
   )
 
   return (
-    <section className="h-screen flex justify-center items-center p-2">
+    <section className=" flex justify-center items-center p-2">
       <form className="flex flex-col gap-4 w-full max-w-md" onSubmit={onSubmit}>
         <h1 className="text-center text-lg mb-2">Agrega tu lista</h1>
         <Input

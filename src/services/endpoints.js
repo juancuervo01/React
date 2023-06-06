@@ -91,6 +91,18 @@ export const getAllShoppingList = async (idusuario) => {
   return shoppingList
 }
 
+export const getAllListProduct = async () => {
+  // devielve todas las listas de compras a partir del id del usuario
+  const db = getFirestore(app)
+  const q = query(collection(db, 'lista_producto'))
+  const querySnapshot = await getDocs(q)
+  const ListProduct = []
+  querySnapshot.forEach((doc) => {
+    ListProduct.push({ id: doc.id, ...doc.data() })
+  })
+  return ListProduct
+}
+
 export const getShoppingList = async (idusuario, idlista) => {
   // devuelve una lista de compras a partir del id del usuario y el id de la lista
   const db = getFirestore(app)
@@ -195,6 +207,22 @@ export const deleteProductOfList = async (idproducto, idlista) => {
   return true
 }
 
+export const deleteProduct = async (idproducto) => {
+  // elimina un producto de una lista
+  const db = getFirestore(app)
+  const q = query(
+    collection(db, 'productos'),
+    where('idproducto', '==', idproducto)
+  )
+  const querySnapshot = await getDocs(q)
+
+  querySnapshot.forEach(async (doc) => {
+    await deleteDoc(doc.ref)
+  })
+
+  return true
+}
+
 export const deleteList = async (idlista) => {
   const db = getFirestore(app)
   const q = query(collection(db, 'lista_compras'), where('idlista', '==', idlista))
@@ -225,15 +253,15 @@ export const createProductOnList = async (idproducto, idlista) => {
     await setDoc(docRef, {})
   }
 
-  const list_product = {
-    idlista: idlista,
-    idproducto: idproducto,
+  const listProduct = {
+    idlista: parseInt(idlista),
+    idproducto: parseInt(idproducto),
     estado: true
   }
 
   return new Promise((resolve, reject) => {
-    addDoc(listaCollection, list_product)
-      .then(() => resolve(list_product))
+    addDoc(listaCollection, listProduct)
+      .then(() => resolve(listProduct))
       .catch((error) => reject(error))
   })
 }
@@ -266,7 +294,7 @@ export const createList = async (nameList, idusuario) => {
   const list = {
     idlista: newIdlista,
     nombre_lista: nameList,
-    idusuario: idusuario,
+    idusuario: parseInt(idusuario),
     fecha_lista: serverTimestamp()
   }
 
@@ -307,7 +335,7 @@ export const createProduct = async (nombre, idProveedor, precio) => {
     nombre_producto: nombre,
     idproveedor: idProveedor,
     fecha_creacion: serverTimestamp(),
-    precio: precio
+    precio: parseInt(precio)
   }
 
   return new Promise((resolve, reject) => {
@@ -317,12 +345,12 @@ export const createProduct = async (nombre, idProveedor, precio) => {
   })
 }
 
-export const updateList = async (documentId, nombre_lista) => {
+export const updateList = async (documentId, nombrelista) => {
   try {
     const db = getFirestore(app)
     const docRef = doc(db, 'lista_compras', documentId)
     await updateDoc(docRef, {
-      nombre_lista: nombre_lista
+      nombre_lista: nombrelista
     })
     console.log('Documento actualizado con éxito')
   } catch (error) {
@@ -330,14 +358,14 @@ export const updateList = async (documentId, nombre_lista) => {
   }
 }
 
-export const updateProducto = async (documentId, nombre_producto, precio, idproveedor) => {
+export const updateProducto = async (documentId, nombreproducto, precio, idproveedor) => {
   try {
     const db = getFirestore(app)
     const docRef = doc(db, 'productos', documentId)
     await updateDoc(docRef, {
-      nombre_producto: nombre_producto,
-      precio: precio,
-      idproveedor: idproveedor
+      nombre_producto: nombreproducto,
+      precio: parseInt(precio),
+      idproveedor: parseInt(idproveedor)
     })
     console.log('Documento actualizado con éxito')
   } catch (error) {

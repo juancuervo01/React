@@ -1,4 +1,4 @@
-import { deleteList, getAllProveedoresList, getAllProductsList } from '@/services/endpoints'
+import { getAllListProduct, deleteProduct, getAllProveedoresList, getAllProductsList } from '@/services/endpoints'
 import { PageSpinner } from '@/components/spinners'
 import { useEffect, useState } from 'react'
 import ProductCard from '@/components/cards/ProductCard'
@@ -17,7 +17,9 @@ export default function HomePage() {
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
   const [proveedores, setProveedores] = useState([])
+  const [listProduct, setListProduct] = useState([])
   const [productListConNombre, setproductListConNombre] = useState([])
+  const [existeProducto, setExisteProducto] = useState(false)
 
   useEffect(() => {
     getAllProductsList()
@@ -27,7 +29,7 @@ export default function HomePage() {
   }, [])
 
   useEffect(() => {
-    getAllProveedoresList([{ idproveedor: 1 }])
+    getAllProveedoresList() // veroficar si funciona
       .then((proveedores) => {
         setProveedores(proveedores)
         setproductListConNombre(productList.map((producto) => {
@@ -60,16 +62,31 @@ export default function HomePage() {
     />
   )
 
-  const handleDelete = (idlista) => {
-    deleteList(idlista)
-      .then(() => {
-        toast.success('Lista eliminada')
-        getAllProductsList()
-          .then((productList) => {
-            setProductList(productList)
-            setFilteredList(productList)
-          })
-          .catch((error) => console.error(error))
+  const handleDelete = (idproducto) => {
+    getAllListProduct()
+      .then((listProduct) => {
+        setListProduct(listProduct)
+        console.log("list-product: ", listProduct, idproducto)
+
+        const existeProducto = listProduct.some(objeto => objeto.idproducto === idproducto)
+        console.log(existeProducto)
+
+        if (existeProducto) {
+          toast.error('¡No se puede eliminar este Producto!. Pertenece a una lista')
+        } else {
+          deleteProduct(idproducto)
+            .then(() => {
+              getAllProductsList()
+                .then((productList) => {
+                  setProductList(productList)
+                  setFilteredList(productList)
+                  toast.success('Producto eliminado correctamente')
+                  setExisteProducto(false)
+                })
+                .catch((error) => console.error(error))
+            })
+            .catch((error) => console.error(error))
+        }
       })
       .catch((error) => console.error(error))
   }
@@ -103,8 +120,8 @@ export default function HomePage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-           <Button2 type="submit" disabled={loading} onClick={() => navigate('/AddProduct')}>
-            <AiOutlinePlus className="ml-1" size={30}/>
+          <Button2 type="submit" disabled={loading} onClick={() => navigate('/AddProduct')}>
+            <AiOutlinePlus className="ml-1" size={30} />
             {loading ? <Spinner /> : 'Añadir Producto'}
           </Button2>
         </div>

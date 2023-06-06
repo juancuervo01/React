@@ -130,7 +130,7 @@ export default function EditList() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-top h-screen mt-10">
+    <div className="flex flex-col items-center justify-top mt-10">
       <form className="flex flex-col gap-4 w-full max-w-md" onSubmit={onSubmit}>
         <h2 className="text-4xl font-bold mb-4">Editar Producto</h2>
         <Input
@@ -170,28 +170,9 @@ export default function EditList() {
             </option>
           ))}
         </select>
+        <p>Fecha de Creacion: {producto2[0].fecha_creacion}</p>
+        <p>ID del Producto: {producto2[0].idproducto}</p>
 
-        <Input
-          disabled
-          required
-          id="fecha"
-          name="fecha"
-          type="text"
-          label="Fecha de Creacion:"
-          placeholder="4 de Junio del 2023"
-          value={producto2[0].fecha_creacion}
-        />
-        <Input
-          disabled
-          required
-          id="id"
-          name="id"
-          type="number"
-          min='0'
-          label="ID del Producto:"
-          placeholder="1"
-          value={producto2[0].idproducto}
-        />
         <div className="mt-1 flex justify-center">
           <Button type="submit" disabled={loading}>
             <span className="flex items-center justify-center">
