@@ -19,7 +19,9 @@ export default function RegisterPage() {
     const errors = {}
 
     if (!name) {
-      errors.name = 'El campo de usuario es requerido'
+      errors.name = 'El campo de nombre es requerido'
+    } else if (!/^[a-zA-Z]+$/.test(name)) {
+      errors.name = 'El campo de nombre solo puede contener letras'
     }
 
     if (!username) {
@@ -47,6 +49,9 @@ export default function RegisterPage() {
 
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors)
+      Object.values(formErrors).forEach((error) => {
+        toast.error(error)
+      })
       return
     }
     setLoading(true)
@@ -75,7 +80,6 @@ export default function RegisterPage() {
       <form className="flex flex-col gap-4 w-full max-w-md" onSubmit={onSubmit}>
         <h1 className="text-center text-lg mb-2">Registra tu cuenta</h1>
         <Input
-          required
           id="name"
           name="name"
           type="text"
@@ -86,7 +90,6 @@ export default function RegisterPage() {
           error={errors.name}
         />
         <Input
-          required
           id="username"
           name="username"
           type="username"
@@ -97,7 +100,6 @@ export default function RegisterPage() {
           error={errors.username}
         />
         <Input
-          required
           id="password"
           name="password"
           type="password"

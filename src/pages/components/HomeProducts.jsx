@@ -2,7 +2,6 @@ import { getAllListProduct, deleteProduct, getAllProveedoresList, getAllProducts
 import { PageSpinner } from '@/components/spinners'
 import { useEffect, useState } from 'react'
 import ProductCard from '@/components/cards/ProductCard'
-import { useAuth } from '@/hooks/useAuth'
 import Button2 from '@/components/ui/Button2'
 import PropagateLoader from 'react-spinners/PropagateLoader'
 import { toast } from 'react-hot-toast'
@@ -11,15 +10,14 @@ import { AiOutlinePlus } from 'react-icons/ai'
 
 export default function HomePage() {
   const navigate = useNavigate()
-  const { session } = useAuth()
   const [productList, setProductList] = useState([])
   const [filteredList, setFilteredList] = useState([])
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
-  const [proveedores, setProveedores] = useState([])
-  const [listProduct, setListProduct] = useState([])
+  const [, setProveedores] = useState([])
+  const [, setListProduct] = useState([])
   const [productListConNombre, setproductListConNombre] = useState([])
-  const [existeProducto, setExisteProducto] = useState(false)
+  const [, setExisteProducto] = useState(false)
 
   useEffect(() => {
     getAllProductsList()
@@ -66,7 +64,7 @@ export default function HomePage() {
     getAllListProduct()
       .then((listProduct) => {
         setListProduct(listProduct)
-        console.log("list-product: ", listProduct, idproducto)
+        console.log('list-product: ', listProduct, idproducto)
 
         const existeProducto = listProduct.some(objeto => objeto.idproducto === idproducto)
         console.log(existeProducto)

@@ -1,18 +1,15 @@
 /* eslint-disable camelcase */
 import react from '@/assets/lista.png'
 import { format } from 'date-fns'
-import { useState } from 'react'
+import { useState, React } from 'react'
 import SimpleSpinner from '../spinners/SimpleSpinner'
 import { AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai'
-import { Link } from 'react-router-dom'
-import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export default function ListCard({ idproducto, idproveedor, precio, nombre_producto, fecha_creacion, count, handleTakeOff, handleDelete, nombre_proveedor }) {
   const formattedDate = format(fecha_creacion.toDate(), 'dd MMMM yyyy')
   const [confirm, setConfirm] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [proveedor, setProveedor] = useState()
   const navigate = useNavigate()
   count = 1
 

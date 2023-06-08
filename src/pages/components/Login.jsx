@@ -39,6 +39,9 @@ export default function LoginPage() {
 
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors)
+      Object.values(formErrors).forEach((error) => {
+        toast.error(error)
+      })
       return
     }
     setLoading(true)
@@ -67,7 +70,6 @@ export default function LoginPage() {
       <form className="flex flex-col gap-4 w-full max-w-md" onSubmit={onSubmit}>
         <img className='m-auto mb-4' src={logo} width="250" height="100" />
         <Input
-          required
           id="username"
           name="username"
           type="username"
@@ -78,7 +80,6 @@ export default function LoginPage() {
           error={errors.username}
         />
         <Input
-          required
           id="password"
           name="password"
           type="password"

@@ -1,12 +1,10 @@
 /* eslint-disable camelcase */
 import react from '@/assets/lista.png'
 import { format } from 'date-fns'
-import { useState } from 'react'
+import { useState, React } from 'react'
 import SimpleSpinner from '../spinners/SimpleSpinner'
 import { AiOutlineEdit, AiOutlineDelete } from 'react-icons/ai'
 import { useNavigate } from 'react-router-dom'
-import { Link } from 'react-router-dom';
-import React from 'react';
 
 export default function ListCard({ idlista, nombre_lista, fecha_lista, count, handleTakeOff, handleDelete }) {
   const formattedDate = format(fecha_lista.toDate(), 'dd MMMM yyyy')
@@ -56,8 +54,8 @@ export default function ListCard({ idlista, nombre_lista, fecha_lista, count, ha
           {count >= 1 && (
 
             <div className="flex flex-row px-2">
-              <button onClick={() => navigate(`/manage-food-menus/${idlista}`)} className="mr-5 bg-green-500 hover:bg-green-600 active:bg-green-700 px-2 py-1 rounded-lg flex items-center">
-                Productos
+              <button onClick={() => navigate(`/manage-products/${idlista}`)} className="mr-5 bg-yellow-500 hover:bg-yellow-600 active:bg-green-700 px-2 py-1 rounded-lg flex items-center">
+                Observar Productos
                 <AiOutlineEdit className="ml-1" size={30} />
               </button>
 

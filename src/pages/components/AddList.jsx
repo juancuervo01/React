@@ -14,9 +14,31 @@ export default function AddListPage() {
   const navigate = useNavigate()
   const { session } = useAuth()
 
+  const [errors, setErrors] = useState({})
+
+  const validateForm = () => {
+    const errors = {}
+
+    if (!nameList) {
+      errors.nameList = 'El campo de nombre es requerido'
+    } else if (!/^[a-zA-Z]+$/.test(nameList)) {
+      errors.nameList = 'El campo de nombre solo puede contener letras'
+    }
+
+    return errors
+  }
+
   const onSubmit = (e) => {
     e.preventDefault()
-    setLoading(true)
+    const formErrors = validateForm()
+
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors)
+      Object.values(formErrors).forEach((error) => {
+        toast.error(error)
+      })
+      return
+    }
     createList(nameList, session.idusuario)
       .then(() => {
         toast.success('Lista agregada exitosamente.')
@@ -50,6 +72,7 @@ export default function AddListPage() {
           placeholder="Lista de compras"
           value={nameList}
           onChange={(e) => setNameList(e.target.value)}
+          error={errors.name}
         />
         <Button type="submit" disabled={loading}>
           <span className="flex items-center justify-center">

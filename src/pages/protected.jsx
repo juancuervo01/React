@@ -6,10 +6,7 @@ const HomePage = lazy(() => import('@/pages/components/Home'))
 const Information = lazy(() => import('@/pages/components/Information'))
 const AddListPages = lazy(() => import('@/pages/components/AddList'))
 const AddProduct = lazy(() => import('@/pages/components/AddProduct'))
-const ReserveListPage = lazy(() => import('@/pages/components/ReserveList'))
-const ReservePage = lazy(() => import('@/pages/components/Reserve'))
-const TicketsListPage = lazy(() => import('@/pages/components/TicketsList'))
-const ManageFoodMenus = lazy(() => import('@/pages/components/ManageFoodMenus'))
+const ManageProducts = lazy(() => import('@/pages/components/ManageProducts'))
 const HomeProducts = lazy(() => import('@/pages/components/HomeProducts'))
 const EditList = lazy(() => import('@/pages/components/EditList'))
 const EditProduct = lazy(() => import('@/pages/components/EditProduct'))
@@ -23,10 +20,6 @@ export const protectedRoutes = [
         element: <HomePage />
       },
       {
-        path: '/reserve/:id',
-        element: <ReservePage />
-      },
-      {
         path: '/AddList',
         element: <AddListPages />
       },
@@ -35,20 +28,12 @@ export const protectedRoutes = [
         element: <AddProduct />
       },
       {
-        path: '/reserve-list',
-        element: <ReserveListPage />
-      },
-      {
-        path: '/tickets-list',
-        element: <TicketsListPage />
-      },
-      {
         path: '/information',
         element: <Information />
       },
       {
-        path: '/manage-food-menus/:idlista',
-        element: <ManageFoodMenus />
+        path: '/manage-products/:idlista',
+        element: <ManageProducts />
       },
       {
         path: '/edit-list/:idlista',

@@ -1,9 +1,6 @@
-import React from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, React } from 'react'
 import { toast } from 'react-hot-toast'
-import { Link } from 'react-router-dom'
-import { useParams } from 'react-router-dom'
-import { createList } from '@/services/endpoints'
+import { Link, useParams } from 'react-router-dom'
 import {
   deleteProductOfList,
   createProductOnList,
@@ -14,30 +11,28 @@ import {
   getAllProductsList,
   getAllProveedoresList
 } from '@/services/endpoints'
-import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
-import { getFirestore, doc, getDoc } from 'firebase/firestore'
 import { AiOutlinePlus, AiOutlineDelete } from 'react-icons/ai'
 
 export default function ProductsManage() {
-  const navigate = useNavigate()
   const { session } = useAuth()
-  const [shoppingList, setShoppingList] = useState([])
+  const [, setShoppingList] = useState([])
+  const [, setLoading] = useState(true)
   const [shoppingList2, setShoppingList2] = useState([
     { idlista: 0, nombre_lista: 'Cargando...', fecha_lista: 'Cargando...', idusuario: session.idusuario }
   ])
   const [idProductList, setIdProductList] = useState([])
-  const [productos, setProductos] = useState([])
-  const [allProductos, setAllProductos] = useState([])
+  const [, setProductos] = useState([])
+  const [, setAllProductos] = useState([])
   const [productos2, setProductos2] = useState([
     { idproducto: 0, nombre_producto: 'Cargando...', precio: 0, idproveedor: 0 }
   ])
   const [allProductos2, setAllProductos2] = useState([
     { idproducto: 0, nombre_producto: 'Cargando...', precio: 0, idproveedor: 0 }
   ])
-  const [proveedores, setProveedores] = useState([])
+  const [, setProveedores] = useState([])
   const [allIdProveedores, setAllIdProveedores] = useState([])
-  const [allProveedores, setAllProveedores] = useState([])
+  const [, setAllProveedores] = useState([])
   const [idProveedores, setIdProvedores] = useState([])
   const [productsOfList, setProductsOfList] = useState([
     { idproducto: 0, nombre_producto: 'Cargando...', precio: 0, idproveedor: 0, nombre_proveedor: 'Cargando...' }
@@ -45,8 +40,6 @@ export default function ProductsManage() {
   const [allProductsOfList, setAllProductsOfList] = useState([
     { idproducto: 0, nombre_producto: 'Cargando...', precio: 0, idproveedor: 0, nombre_proveedor: 'Cargando...' }
   ])
-  const [filteredList, setFilteredList] = useState([])
-  const [loading, setLoading] = useState(true)
 
   // OBTENER ID LISTA
   const { idlista } = useParams() // id lista session.idusuario;
@@ -107,7 +100,6 @@ export default function ProductsManage() {
 
   // OBTENER PROVEEDORES DE CADA PRODUCTO
   useEffect(() => {
-    console.log("idProvedoresssssss", idProveedores)
     getProvedorbyId(idProveedores)
       .then((proveedores) => {
         setProductsOfList(
@@ -119,13 +111,10 @@ export default function ProductsManage() {
                 nombre_proveedor: obj1.nombre_proveedor
               }
             }
-            console.log("productos 222", productos2)
             return obj2
           })
         )
-        console.log('New ARRRRAY Productos of list', productsOfList)
         setProveedores(proveedores)
-        console.log('manage getProvedoresbyID: =>', proveedores)
       })
       .catch((error) => console.error(error))
       .finally(() => setLoading(false))
@@ -163,7 +152,7 @@ export default function ProductsManage() {
       .then((allProveedores) => {
         setAllProductsOfList(
           allProductos2.map((obj2) => {
-            const obj1 = allProveedores.find((obj1) => obj1.idproveedor == obj2.idproveedor)
+            const obj1 = allProveedores.find((obj1) => obj1.idproveedor === obj2.idproveedor)
             if (obj1) {
               return {
                 ...obj2,
@@ -180,10 +169,6 @@ export default function ProductsManage() {
       .catch((error) => console.error(error))
       .finally(() => setLoading(false))
   }, [allIdProveedores])
-
-  const [selectedProducts, setSelectedProducts] = useState([])
-  const [listName, setListName] = useState('Plaza')
-  const listId = idlista
 
   const handleAddProduct = (product) => {
     // Funcion de Añadir un producto
@@ -294,8 +279,8 @@ export default function ProductsManage() {
         </div>
       </div>
 
-      <Link className=" flex  mt-12 justify-center items-center" to={`/`}>
-        <button className="px-8 py-2 bg-green-500 hover:bg-green-600 rounded-lg flex items-center">Volver</button>
+      <Link className=" flex  mt-12 justify-center items-center" to={'/'}>
+        <button className="px-8 py-2 bg-gray-400 hover:bg-gray-500 rounded-lg flex items-center">Volver</button>
       </Link>
     </div>
   )

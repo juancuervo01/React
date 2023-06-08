@@ -1,16 +1,11 @@
-import React from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, React } from 'react'
 import { toast } from 'react-hot-toast'
-import { Link } from 'react-router-dom'
-import { useParams } from 'react-router-dom'
-import { createList } from '@/services/endpoints'
 import { getShoppingList, updateList } from '@/services/endpoints'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
-import { getFirestore, doc, getDoc } from 'firebase/firestore'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
-import { AiOutlineEdit, AiOutlineDelete, AiOutlinePlus } from 'react-icons/ai'
+import { AiOutlineEdit } from 'react-icons/ai'
 import PropagateLoader from 'react-spinners/PropagateLoader'
 
 export default function EditList() {
@@ -19,13 +14,25 @@ export default function EditList() {
   const [shoppingList, setShoppingList] = useState([])
   const [shoppingList2, setShoppingList2] = useState([{}])
   const [nameLista, setnameLista] = useState()
-  const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
   const [nombreLista, setNombreLista] = useState()
   // OBTENER ID LISTA
   const { idlista } = useParams() // id lista session.idusuario;
   const idLista = parseInt(idlista.trim())
   const idUsuario = parseInt(session.idusuario)
+  const [errors, setErrors] = useState({})
+
+  const validateForm = () => {
+    const errors = {}
+
+    if (!nombreLista) {
+      errors.nombreLista = 'El campo de nombre de la lista es requerido'
+    } else if (!/^[a-zA-Z]+$/.test(nombreLista)) {
+      errors.nombreLista = 'El campo de nombre solo puede contener letras'
+    }
+
+    return errors
+  }
 
   useEffect(() => {
     getShoppingList(idUsuario, idLista)
@@ -70,7 +77,16 @@ export default function EditList() {
   const onSubmit = (e) => {
     e.preventDefault()
     setLoading(true)
-    if (nombreLista != undefined && nombreLista != shoppingList[0].nombre_lista) {
+    const formErrors = validateForm()
+
+    if (Object.keys(formErrors).length > 0) {
+      setErrors(formErrors)
+      Object.values(formErrors).forEach((error) => {
+        toast.error(error)
+      })
+      return
+    }
+    if (nombreLista !== undefined && nombreLista !== shoppingList[0].nombre_lista) {
       console.log(nombreLista)
       updateList(shoppingList[0].id, nombreLista)
         .then(() => {
@@ -89,7 +105,6 @@ export default function EditList() {
         <h2 className="text-4xl font-bold mb-4">Editar Lista</h2>
         <div className="flex items-center">
           <Input
-            required
             id="nombre"
             name="nombre"
             type="text"
@@ -97,6 +112,7 @@ export default function EditList() {
             placeholder="Nombre de la lista"
             value={nombreLista}
             onChange={handleInputChange}
+            error={errors.nombreLista}
           />
         </div>
         <p className="text-gray-600">Fecha de Creación: {shoppingList2[0].fecha_lista}</p>
@@ -110,7 +126,7 @@ export default function EditList() {
           </Button>
           <button
             onClick={handleExit}
-            className="px-8 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 ml-12"
+            className="px-8 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 ml-12"
           >
             Salir
           </button>

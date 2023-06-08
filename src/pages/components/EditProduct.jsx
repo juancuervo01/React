@@ -1,30 +1,19 @@
-import React from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, React } from 'react'
 import { toast } from 'react-hot-toast'
-import { Link } from 'react-router-dom'
-import { useParams } from 'react-router-dom'
-import { createList } from '@/services/endpoints'
-import { getAllProveedoresList, updateProducto, updateList, getProduct, getProvedorbyId } from '@/services/endpoints'
-import { useNavigate } from 'react-router-dom'
-import { useAuth } from '@/hooks/useAuth'
-import { getFirestore, doc, getDoc } from 'firebase/firestore'
+import { getAllProveedoresList, updateProducto, getProduct, getProvedorbyId } from '@/services/endpoints'
+import { useNavigate, useParams } from 'react-router-dom'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
-import Button2 from '@/components/ui/Button2'
 import { AiOutlinePlus } from 'react-icons/ai'
 import PropagateLoader from 'react-spinners/PropagateLoader'
 
 export default function EditList() {
   const navigate = useNavigate()
-  const { session } = useAuth()
   const [producto, setProducto] = useState([])
   const [producto2, setProducto2] = useState([{}])
   const [proveedor, setProveedor] = useState()
-  const [proveedores, setProveedores] = useState([])
+  const [, setProveedores] = useState([])
   const [proveedores2, setProveedores2] = useState([])
-  const [allIdProveedores, setAllIdProveedores] = useState([{}])
-  const [nameLista, setnameLista] = useState([])
-  const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
   const [nombreProducto, setNombreProducto] = useState()
   const [precioProducto, setPrecioProducto] = useState()
@@ -34,7 +23,6 @@ export default function EditList() {
   // OBTENER ID LISTA
   const { idproducto } = useParams() // id lista session.idusuario;
   const idProducto = parseInt(idproducto.trim())
-  const idUsuario = parseInt(session.idusuario)
 
   useEffect(() => {
     getProduct(idProducto)
@@ -71,8 +59,8 @@ export default function EditList() {
         setProveedores(proveedores)
         const proveedorId = producto2[0].idproveedor
         setProveedores2([
-          ...proveedores.filter((p) => p.idproveedor == proveedorId),
-          ...proveedores.filter((p) => p.idproveedor != proveedorId)
+          ...proveedores.filter((p) => p.idproveedor === proveedorId),
+          ...proveedores.filter((p) => p.idproveedor !== proveedorId)
         ])
         console.log('getALLProvedoresList proveedores mapeados (proveedores2) =>', proveedores2)
       })
@@ -99,14 +87,42 @@ export default function EditList() {
     setProveedorProducto(objetoEncontrado.nombre_proveedor)
   }
 
+  const [errors, setErrors] = useState({})
+
+  const validateForm = () => {
+    const errors = {}
+
+    if (!nombreProducto) {
+      errors.nombreProducto = 'El campo de nombre es requerido'
+    } else if (!/^[a-zA-Z]+$/.test(nombreProducto)) {
+      errors.nombreProducto = 'El campo de nombre solo puede contener letras'
+    }
+
+    if (!precioProducto) {
+      errors.precioProducto = 'El campo de precio es requerido'
+    } else if (precioProducto.length < 3 || precioProducto.length > 20) {
+      errors.precioProducto = 'El precio debe tener entre 3 y 20 digitos'
+    }
+
+    return errors
+  }
+
   const onSubmit = (e) => {
-    if (nombreProducto == producto2[0].nombre_producto && precioProducto == producto2[0].precio && idProveedorProducto == producto2[0].idproveedor) {
+    if (nombreProducto === producto2[0].nombre_producto && precioProducto === producto2[0].precio && idProveedorProducto === producto2[0].idproveedor) {
       e.preventDefault()
-      setLoading(true)
       toast.error('No se ha realizado cambios')
       setLoading(false)
     } else {
       e.preventDefault()
+      const formErrors = validateForm()
+
+      if (Object.keys(formErrors).length > 0) {
+        setErrors(formErrors)
+        Object.values(formErrors).forEach((error) => {
+          toast.error(error)
+        })
+        return
+      }
       setLoading(true)
       updateProducto(producto2[0].id, nombreProducto, precioProducto, idProveedorProducto)
         .then(() => {
@@ -134,7 +150,6 @@ export default function EditList() {
       <form className="flex flex-col gap-4 w-full max-w-md" onSubmit={onSubmit}>
         <h2 className="text-4xl font-bold mb-4">Editar Producto</h2>
         <Input
-          required
           id="nombre"
           name="nombre"
           type="text"
@@ -142,9 +157,9 @@ export default function EditList() {
           placeholder="Nombre del producto"
           value={nombreProducto}
           onChange={handleInputChangeNombre}
+          error={errors.nombreProducto}
         />
         <Input
-          required
           id="precio"
           name="precio"
           type="number"
@@ -153,6 +168,7 @@ export default function EditList() {
           placeholder="5000"
           value={precioProducto}
           onChange={handleInputChangePrecio}
+          error={errors.precioProducto}
         />
         <label htmlFor="proveedor">
           Proveedor:
@@ -182,7 +198,7 @@ export default function EditList() {
           </Button>
           <button
             onClick={handleExit}
-            className="px-8 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 ml-12"
+            className="px-8 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 ml-12"
           >
             Salir
           </button>
