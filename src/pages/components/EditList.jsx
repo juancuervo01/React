@@ -27,7 +27,7 @@ export default function EditList() {
 
     if (!nombreLista) {
       errors.nombreLista = 'El campo de nombre de la lista es requerido'
-    } else if (!/^[a-zA-Z]+$/.test(nombreLista)) {
+    } else if (!/^[a-zA-Z\sñÑ]+$/.test(nombreLista)) {
       errors.nombreLista = 'El campo de nombre solo puede contener letras'
     }
 

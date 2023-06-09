@@ -94,7 +94,7 @@ export default function EditList() {
 
     if (!nombreProducto) {
       errors.nombreProducto = 'El campo de nombre es requerido'
-    } else if (!/^[a-zA-Z]+$/.test(nombreProducto)) {
+    } else if (!/^[a-zA-Z\sñÑ]+$/.test(nombreProducto)) {
       errors.nombreProducto = 'El campo de nombre solo puede contener letras'
     }
 

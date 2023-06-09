@@ -21,7 +21,7 @@ export default function AddListPage() {
 
     if (!nameList) {
       errors.nameList = 'El campo de nombre es requerido'
-    } else if (!/^[a-zA-Z]+$/.test(nameList)) {
+    } else if (!/^[a-zA-Z\sñÑ]+$/.test(nameList)) {
       errors.nameList = 'El campo de nombre solo puede contener letras'
     }
 
@@ -59,6 +59,10 @@ export default function AddListPage() {
     />
   )
 
+  const handleExit = () => {
+    navigate('/')
+  }
+
   return (
     <section className=" flex justify-center items-center p-2">
       <form className="flex flex-col gap-4 w-full max-w-md" onSubmit={onSubmit}>
@@ -74,12 +78,20 @@ export default function AddListPage() {
           onChange={(e) => setNameList(e.target.value)}
           error={errors.name}
         />
+        <div className='flex  items-center justify-center'>
         <Button type="submit" disabled={loading}>
           <span className="flex items-center justify-center">
             {loading ? <Spinner /> : 'Añadir'}
             <AiOutlinePlus className="ml-1" size={30} />
           </span>
         </Button>
+          <button
+            onClick={handleExit}
+            className="px-8 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 ml-12"
+          >
+            Salir
+          </button>
+        </div>
       </form>
     </section>
 
